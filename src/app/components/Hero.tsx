@@ -3,6 +3,7 @@ import React from 'react';
 import Button from './Button';
 import { MdVerified } from 'react-icons/md'
 import Image from 'next/image';
+import Campaing from './Campaing';
 
 const Hero = () => {
   return (
@@ -26,11 +27,7 @@ const Hero = () => {
             <Button text="Comments" onClick={() => console.log('clicked!')} />
         </div>
 
-        <div className=" w-full h-32 mt-24 border-8 border-black bg-[#FFF9ED]">
-            <div className='h-full bg-black'>
-
-            </div> 
-        </div>
+        <Campaing/>
       </div>
 
       <div className=" left-3 top-32 min-h-[70vh] h-full w-[22vw] pb-12 p-5 bg-[#FFF9ED] border-8 border-black text-center">
@@ -39,9 +36,37 @@ const Hero = () => {
         <div className='flex flex-row justify-center items-center gap-1'><MdVerified size={20} className='text-[#7fe0c5]' /><h4 className=''>Verified Project</h4></div>
 
         <h1 className='mt-10 font-bold text-2xl'>158,788 / 235,000 $</h1>
-
-        <div className='bg-black h-40 w-full mt-2'>
+        <div>
+          <div className=' text-xl animate-pulse font-bold flex flex-row mt-[1rem] '> 
+            <p>Processing</p>
+            <p className=' text-2xl ml-2'>. . .</p>
+          </div>
+          <div className=' border-black border-[0.3rem] w-full '>
+            <div className=' my-[0.5rem] w-full flex gap-2 items-center justify-center flex-wrap'>
+              <div className=' bg-[#8fb3ff] p-[0.8rem]  '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.8rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.8rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.8rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.8rem] '>
+              </div>
+            </div>
+          </div>
         </div>
+
 
         <div className='flex justify-between mx-2 py-8'>
             <div>
