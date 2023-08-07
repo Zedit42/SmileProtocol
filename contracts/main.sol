@@ -1,10 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+import "./ERC721.sol";
+import "./ERC20.sol";
+
+
 contract Main {
+
+    event newProject(string _projectName, address indexed _owner, uint256 _timestamp);
     
+    SmileProtocolToken immutable SMILE;
     Project[] public projects;
     mapping(uint256 => WithdrawalRequest[]) requests;
+
+    constructor(){
+        SMILE = new SmileProtocolToken("Smile Protocol", "SMILE");
+    }
 
     struct Project {
         uint256 id;
@@ -29,7 +40,7 @@ contract Main {
     }
 
     struct ProjectNFT {
-        //address nftAddress;
+        address nftAddress;
         uint256 threshold;
         uint256 maxSupply;
         uint256 ownerCount;
@@ -46,7 +57,7 @@ contract Main {
 
         uint256 currentID = projects.length;
 
-        // NFT Deployment (nftAddress)
+        SmileProtocol_ProjectNFT nftContract = new SmileProtocol_ProjectNFT(_projectName, _nftShort);
 
         projects.push(Project({
             id: currentID,
@@ -58,7 +69,7 @@ contract Main {
             goalAmount: _goalAmount,
             withdrawalRequestCount: 0,
             projectNFT: ProjectNFT({
-                //nftAddress: nftAddress,
+                nftAddress: address(nftContract),
                 threshold: _nftThreshold,
                 maxSupply: _nftMaxSupply,
                 ownerCount: 0
@@ -66,6 +77,11 @@ contract Main {
             isActive: true
         }));
 
+        emit newProject(_projectName, msg.sender, block.timestamp);
         return currentID;
+    }
+
+    function getProject(uint256 _projectID) external view returns(Project memory) {
+        return projects[_projectID];
     }
 }
