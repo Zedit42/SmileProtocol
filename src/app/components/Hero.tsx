@@ -78,7 +78,7 @@ const Hero = () => {
                 <p className='font-bold'>supporter</p>
             </div>
         </div>
-        <button className=' w-5/6 h-16 mt-[3rem] border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-4xl font-bold py-2'>Support</button>
+        <button className=' w-5/6 h-16 mt-[3rem] border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-4xl font-bold py-2 custom-pointer'>Support</button>
       </div>
     </div>
   );
