@@ -22,7 +22,6 @@ contract Main {
         address projectOwner;
         //bytes32 EAS_UID;
         string projectName;
-        uint256 supporterCount;
         uint256 donationAmount;
         uint256 goalAmount;
         uint256 withdrawalRequestCount;
@@ -43,7 +42,7 @@ contract Main {
         address nftAddress;
         uint256 threshold;
         uint256 maxSupply;
-        uint256 ownerCount;
+        uint256 voterCount;
     }
 
     function deployNewProject(
@@ -64,7 +63,6 @@ contract Main {
             projectOwner: msg.sender,
             //EAS_UID: _EAS_UID,
             projectName: _projectName,
-            supporterCount: 0,
             donationAmount: 0,
             goalAmount: _goalAmount,
             withdrawalRequestCount: 0,
@@ -72,7 +70,7 @@ contract Main {
                 nftAddress: address(nftContract),
                 threshold: _nftThreshold,
                 maxSupply: _nftMaxSupply,
-                ownerCount: 0
+                voterCount: 0
             }),
             isActive: true
         }));
@@ -84,4 +82,31 @@ contract Main {
     function getProject(uint256 _projectID) external view returns(Project memory) {
         return projects[_projectID];
     }
+
+
+    function donate(uint256 _projectID, uint256 _amount) external {
+        require(projects[_projectID].isActive, "This project is not active.");
+        require(_amount <= SMILE.balanceOf(msg.sender), "Insufficient balance.");
+        require(_amount <= SMILE.allowance(msg.sender, address(this)));
+        
+        SMILE.transferFrom(msg.sender, address(this), _amount);
+        Project storage project = projects[_projectID];
+        project.donationAmount += _amount;
+        
+        if(_amount >= project.projectNFT.threshold) {
+            uint256 votePower = _amount / project.projectNFT.threshold;
+            SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
+            project.projectNFT.voterCount += votePower;
+        }
+    }
+
+    function getVotePower(uint256 _projectID) external view returns(uint256){
+        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(msg.sender);
+    }
+
+    /*
+    function getNFTPower(uint256 _projectID, uint256 _id) external view returns(uint256){
+        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getNFTPower(msg.sender);
+    }
+    */
 }
