@@ -11,6 +11,7 @@ contract Main {
     event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
     event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description);
     event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
+    event newVote(address indexed _voter, uint256 indexed _projectID, uint256 _reqID, bool _vote, uint256 _power);
 
     ERC20Token immutable SMILE;
     ERC20Token immutable CCIPBnM;
@@ -128,10 +129,6 @@ contract Main {
         }
     }
 
-    function getVotePower(uint256 _projectID) external view returns(uint256){
-        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(msg.sender);
-    }
-
     function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description) external {
         require(msg.sender == projects[_projectID].projectOwner, "You are not authorized");
         require(projects[_projectID].isActive, "This project is no longer active.");
@@ -206,32 +203,28 @@ contract Main {
         );
     }
 
+    function getVotePower(uint256 _projectID, address _user) internal view returns(uint256) {
+        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(_user);
+    }
+
+    function myVotePower(uint256 _projectID) external view returns(uint256) {
+        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(msg.sender);
+    }
+
     function vote(uint256 _projectID, uint256 _reqID, bool _vote) external {
+        require(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) > 0, "You are not eligible to vote.");
         require(checkLastWithdrawalRequest(_projectID).isActive, "This withdrawal request is no longer active.");
         require(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp, "You are late to vote.");
+        require(!voteStatus[_projectID][_reqID][msg.sender][0], "You have already voted.");
 
-        if(voteStatus[_projectID][_reqID][msg.sender][0]){
-            if(_vote == voteStatus[_projectID][_reqID][msg.sender][1]){
-                revert();
-            } else {
-                voteStatus[_projectID][_reqID][msg.sender][1] = _vote;
-                if(_vote){
-                    checkLastWithdrawalRequest(_projectID).declines--;
-                    checkLastWithdrawalRequest(_projectID).approvals++;
-                } else {
-                    checkLastWithdrawalRequest(_projectID).approvals--;
-                    checkLastWithdrawalRequest(_projectID).declines++;
-                }
-            }
+        voteStatus[_projectID][_reqID][msg.sender][0] = true;
+
+        if(_vote){
+            voteStatus[_projectID][_reqID][msg.sender][1] = true;
+            checkLastWithdrawalRequest(_projectID).approvals += getVotePower(_projectID, msg.sender);
         } else {
-            voteStatus[_projectID][_reqID][msg.sender][0] = true;
-            if(_vote){
-                voteStatus[_projectID][_reqID][msg.sender][1] = true;
-                checkLastWithdrawalRequest(_projectID).approvals++;
-            } else {
-                voteStatus[_projectID][_reqID][msg.sender][1] = false;
-                checkLastWithdrawalRequest(_projectID).declines++;
-            }
+            voteStatus[_projectID][_reqID][msg.sender][1] = false;
+            checkLastWithdrawalRequest(_projectID).declines += getVotePower(_projectID, msg.sender);
         }
     }
 
