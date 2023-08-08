@@ -7,11 +7,14 @@ import "./ERC20.sol";
 
 contract Main {
 
-    event newProject(string _projectName, address indexed _owner, uint256 _timestamp);
-    
+    event newProject(uint256 indexed _projectID, string _projectName, address indexed _owner, uint256 _timestamp);
+    event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
+
     SmileProtocolToken immutable SMILE;
     Project[] public projects;
     mapping(uint256 => WithdrawalRequest[]) requests;
+    mapping(uint256 => mapping(uint256 => mapping(address => bool))) voteStatus;
+    uint256 constant minSecondsToVote = 1209600;
 
     constructor(){
         SMILE = new SmileProtocolToken("Smile Protocol", "SMILE");
@@ -22,7 +25,8 @@ contract Main {
         address projectOwner;
         //bytes32 EAS_UID;
         string projectName;
-        uint256 donationAmount;
+        uint256 currentBalance;
+        uint256 totalDonationAmount;
         uint256 goalAmount;
         uint256 withdrawalRequestCount;
         ProjectNFT projectNFT;
@@ -34,8 +38,8 @@ contract Main {
         uint256 amount;
         uint256 approvals;
         uint256 declines;
-        uint256 endlineTimestamp;
-        bool isActive;
+        uint256 endTimestamp;
+        string description;
     }
 
     struct ProjectNFT {
@@ -63,7 +67,8 @@ contract Main {
             projectOwner: msg.sender,
             //EAS_UID: _EAS_UID,
             projectName: _projectName,
-            donationAmount: 0,
+            currentBalance: 0,
+            totalDonationAmount: 0,
             goalAmount: _goalAmount,
             withdrawalRequestCount: 0,
             projectNFT: ProjectNFT({
@@ -75,7 +80,16 @@ contract Main {
             isActive: true
         }));
 
-        emit newProject(_projectName, msg.sender, block.timestamp);
+        requests[currentID].push(WithdrawalRequest({
+            requestID: 0,
+            amount: 0,
+            approvals: 0,
+            declines: 0,
+            endTimestamp: 0,
+            description: ""
+        }));
+
+        emit newProject(currentID ,_projectName, msg.sender, block.timestamp);
         return currentID;
     }
 
@@ -85,13 +99,15 @@ contract Main {
 
 
     function donate(uint256 _projectID, uint256 _amount) external {
+        require(_amount > 0, "The donation amount must be greater than 0.");
         require(projects[_projectID].isActive, "This project is not active.");
         require(_amount <= SMILE.balanceOf(msg.sender), "Insufficient balance.");
         require(_amount <= SMILE.allowance(msg.sender, address(this)));
         
         SMILE.transferFrom(msg.sender, address(this), _amount);
         Project storage project = projects[_projectID];
-        project.donationAmount += _amount;
+        project.totalDonationAmount += _amount;
+        project.currentBalance += _amount;
         
         if(_amount >= project.projectNFT.threshold) {
             uint256 votePower = _amount / project.projectNFT.threshold;
@@ -102,6 +118,34 @@ contract Main {
 
     function getVotePower(uint256 _projectID) external view returns(uint256){
         return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(msg.sender);
+    }
+
+    function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description) external {
+        require(msg.sender == projects[_projectID].projectOwner, "You are not authorized");
+        require(_amount > 0, "The withdrawal amount must be greater than 0.");
+        require(block.timestamp > requests[_projectID][(projects[_projectID].withdrawalRequestCount)].endTimestamp, "There is already an active withdrawal request.");
+        require(_amount <= projects[_projectID].currentBalance, "Unvalid amount.");
+        require(_endTimestamp >= (block.timestamp + minSecondsToVote), "There must be a minimum 14 days voting period.");
+
+        requests[_projectID].push(WithdrawalRequest({
+            requestID: projects[_projectID].withdrawalRequestCount,
+            //failed withdrawal request count to project struct
+
+            amount: _amount,
+            approvals: 0,
+            declines: 0,
+            endTimestamp: _endTimestamp,
+            description: _description
+        }));
+
+        emit newWithdrawalRequest(
+            _projectID,
+            projects[_projectID].withdrawalRequestCount,
+            projects[_projectID].projectName,
+            _amount,
+            _description,
+            _endTimestamp
+        );
     }
 
     /*
