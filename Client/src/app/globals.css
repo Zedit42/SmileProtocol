@@ -2,12 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .custom-default {
   cursor: url('/cursor-default.svg'), auto;
 }
 
 .custom-pointer {
-  cursor: url('/cursor-hover.svg'),-webkit-image-set(url('/cursor-hover.svg') 1x) auto;
+  cursor: url('/cursor-hover.svg'), auto;
 }
 
+/* ::-webkit-scrollbar {
+  color: black;
+} */
+
+::-webkit-scrollbar {
+  width: 13px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ea6b6c;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ffede0;
+}

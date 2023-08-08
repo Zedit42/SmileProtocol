@@ -7,7 +7,7 @@ const Campaing = () => {
         <div className=" w-[45vw]  mt-8 border-8 border-black bg-[#FFF9ED] py-8 flex">
             <div className=' h-full  flex flex-col'>
                 <div className='border-b-8 border-black border-dashed'>
-                    <p className=' text-2xl font-extrabold m-[1rem] mb-0'>Creator Info</p>
+                    <p className=' text-3xl font-extrabold m-[1rem] mb-0'>Creator Info</p>
                     <div className=' flex'>
                         <div>
                             <Image
@@ -26,7 +26,7 @@ const Campaing = () => {
                             />
                         </div>
                         <div className=' max-w-[60%] mb-4'>
-                            <p className=' text-lg font-bold'>BlockchainDEU</p>
+                            <p className=' text-xl font-bold'>BlockchainDEU</p>
                             <p>BlockchainDEU is a student community that wants to inform people about everything related to blockchain such as Metaverse, Web 3.0, Cryptocurrencies, NFT, the meaning of Decentralization and Network structures, and who want to move forward together on this journey and try to do these together as Dokuz Eylül students.</p>
                         </div>
                     </div>
