@@ -11,11 +11,18 @@ const Campaing = () => {
                     <div className=' flex'>
                         <div>
                             <Image
+                            src={'/smile_frame.png'}
+                            width={200}
+                            height={200}
+                            alt='frame'
+                            className=' mx-4 absolute '
+                            />
+                            <Image
                                 src={'/DeuBc.png'}
-                                width={200}
+                                width={140}
                                 height={200}
                                 alt='creator logo'
-                                className=' m-[1rem] '
+                                className=' m-[3rem] my-[3.5rem]  '
                             />
                         </div>
                         <div className=' max-w-[60%] mb-4'>

@@ -1,10 +1,9 @@
 import Header from '@/app/components/Header'
-import Hero from '@/app/components/Project'
 import '../../globals.css'
 
 import React from 'react'
 
-const Project = () => {
+const Profile = () => {
   return (
     <main className=' cursor-none '>
       <img
@@ -14,10 +13,10 @@ const Project = () => {
       />
       <div className='custom-default'>
         <Header/>
-        <Hero/>
+
       </div>
     </main>
   )
 }
 
-export default Project
+export default Profile

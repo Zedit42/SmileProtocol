@@ -8,10 +8,12 @@ const Header = () => {
           <Link href={'/'}>
             <img src={'/smile.png'} alt="smile" className=' w-[13vw]' />
           </Link>
-          <div className=" border-4 border-black flex px-[2rem] py-[0.5rem] my-auto bg-[#FFF9ED] hover:bg-black hover:text-[#FFF9ED] transition-all delay-75">
-            <div className=' p-3 bg-black'></div>
-            <p className='my-auto pl-2 custom-pointer'>0xs21f35sd43fs1g...</p>
-          </div>
+          <Link href={'/profile/1'}>
+            <div className=" hover:animate-jelly border-4 border-black flex px-[2rem] py-[0.5rem] my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75">
+              <div className=' p-3 bg-black'></div>
+              <p className='my-auto pl-2 cursor-pointer'>0xs21f35sd43fs1g...</p>
+            </div>
+          </Link>
         </div>
     </div>
   );

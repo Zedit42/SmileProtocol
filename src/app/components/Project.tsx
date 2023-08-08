@@ -32,7 +32,7 @@ const Hero = () => {
 
       <div className=" left-3 top-32 min-h-[70vh] h-full w-[22vw] pb-12 p-5 bg-[#FFF9ED] border-8 border-black text-center">
 
-        <h1 className=' font-extrabold text-3xl'>Smile Protocol</h1>
+        <h1 className=' font-extrabold text-3xl  '>Smile Protocol</h1>
         <div className='flex flex-row justify-center items-center gap-1'><MdVerified size={20} className='text-[#7fe0c5]' /><h4 className=''>Verified Project</h4></div>
 
         <h1 className='mt-10 font-bold text-2xl'>158,788 / 235,000 $</h1>
@@ -98,7 +98,7 @@ const Hero = () => {
                 <p className='font-bold'>supporter</p>
             </div>
         </div>
-        <button className=' w-5/6 h-16 mt-[3rem] border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-4xl font-bold py-2 custom-pointer'>Support</button>
+        <button className=' hover:animate-jelly w-5/6 h-16 mt-[3rem] border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-4xl font-bold py-2 custom-pointer'>Support</button>
       </div>
     </div>
   );
