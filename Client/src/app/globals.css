@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.custom-default {
+  cursor: url('/cursor-default.svg'), auto;
+}
+
+.custom-pointer {
+  cursor: url('/cursor-hover.svg'),-webkit-image-set(url('/cursor-hover.svg') 1x) auto;
+}
+
