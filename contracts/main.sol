@@ -9,11 +9,14 @@ contract Main {
 
     event newProject(uint256 indexed _projectID, string _projectName, address indexed _owner, uint256 _timestamp);
     event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
+    event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description);
+    event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
 
     SmileProtocolToken immutable SMILE;
-    Project[] public projects;
-    mapping(uint256 => WithdrawalRequest[]) requests;
-    mapping(uint256 => mapping(uint256 => mapping(address => bool))) voteStatus;
+    Project[] private projects;
+    mapping(uint256 => WithdrawalRequest[]) private requests;
+    mapping(uint256 => mapping(uint256 => mapping(address => bool[2]))) private voteStatus;
+    mapping(address => mapping(uint256 => uint256)) private addressToDonationAmount;
     uint256 constant minSecondsToVote = 1209600;
     uint8 constant maxFailedWithdrawalRequests = 3;
 
@@ -42,6 +45,7 @@ contract Main {
         uint256 declines;
         uint256 endTimestamp;
         string description;
+        bool isActive;
     }
 
     struct ProjectNFT {
@@ -89,7 +93,8 @@ contract Main {
             approvals: 0,
             declines: 0,
             endTimestamp: 0,
-            description: ""
+            description: "",
+            isActive: true
         }));
 
         emit newProject(currentID ,_projectName, msg.sender, block.timestamp);
@@ -111,6 +116,8 @@ contract Main {
         Project storage project = projects[_projectID];
         project.totalDonationAmount += _amount;
         project.currentBalance += _amount;
+
+        addressToDonationAmount[msg.sender][_projectID] += _amount;
         
         if(_amount >= project.projectNFT.threshold) {
             uint256 votePower = _amount / project.projectNFT.threshold;
@@ -147,7 +154,8 @@ contract Main {
             approvals: 0,
             declines: 0,
             endTimestamp: _endTimestamp,
-            description: _description
+            description: _description,
+            isActive: true
             }));
 
             emit newWithdrawalRequest(
@@ -159,15 +167,69 @@ contract Main {
                 _endTimestamp
             );
 
+            checkLastWithdrawalRequest(_projectID).isActive = false;
             projects[_projectID].withdrawalRequestCount++;
         }
     }
 
-    function checkWithdrawalRequest(uint256 _projectID, uint256 _reqID) external view returns(WithdrawalRequest memory) {
+    function checkWithdrawalRequest(uint256 _projectID, uint256 _reqID) public view returns(WithdrawalRequest memory) {
         return requests[_projectID][_reqID];
     }
 
     function checkLastWithdrawalRequest(uint256 _projectID) public view returns(WithdrawalRequest memory) {
-        return requests[_projectID][(projects[_projectID].withdrawalRequestCount)-1];
+        return requests[_projectID][(projects[_projectID].withdrawalRequestCount)];
+    }
+
+    function checkVotes(uint256 _projectID, uint256 _reqID) internal view returns(bool){
+        return (checkWithdrawalRequest(_projectID, _reqID).approvals > checkWithdrawalRequest(_projectID, _reqID).declines);
+    }
+
+    function claimWithdrawal(uint256 _projectID, uint256 _reqID) external {
+        require(msg.sender == projects[_projectID].projectOwner, "You are not authorized");
+        require(checkWithdrawalRequest(_projectID, _reqID).isActive, "This withdrawal is not active.");
+        require(block.timestamp > checkWithdrawalRequest(_projectID, _reqID).endTimestamp);
+        require(checkVotes(_projectID, _reqID), "There is no consensus!");
+        require(checkWithdrawalRequest(_projectID, _reqID).amount <= projects[_projectID].currentBalance);
+
+        requests[_projectID][_reqID].isActive = false;
+        projects[_projectID].currentBalance -= checkWithdrawalRequest(_projectID, _reqID).amount;
+        SMILE.transfer(projects[_projectID].projectOwner, checkWithdrawalRequest(_projectID, _reqID).amount);
+
+        emit claimedWithdrawalRequest(
+            _projectID,
+            _reqID,
+            projects[_projectID].projectName,
+            checkWithdrawalRequest(_projectID, _reqID).amount,
+            checkWithdrawalRequest(_projectID, _reqID).description
+        );
+    }
+
+    function vote(uint256 _projectID, uint256 _reqID, bool _vote) external {
+        require(checkLastWithdrawalRequest(_projectID).isActive, "This withdrawal request is no longer active.");
+        require(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp, "You are late to vote.");
+
+        if(voteStatus[_projectID][_reqID][msg.sender][0]){
+            if(_vote == voteStatus[_projectID][_reqID][msg.sender][1]){
+                revert();
+            } else {
+                voteStatus[_projectID][_reqID][msg.sender][1] = _vote;
+                if(_vote){
+                    checkLastWithdrawalRequest(_projectID).declines--;
+                    checkLastWithdrawalRequest(_projectID).approvals++;
+                } else {
+                    checkLastWithdrawalRequest(_projectID).approvals--;
+                    checkLastWithdrawalRequest(_projectID).declines++;
+                }
+            }
+        } else {
+            voteStatus[_projectID][_reqID][msg.sender][0] = true;
+            if(_vote){
+                voteStatus[_projectID][_reqID][msg.sender][1] = true;
+                checkLastWithdrawalRequest(_projectID).approvals++;
+            } else {
+                voteStatus[_projectID][_reqID][msg.sender][1] = false;
+                checkLastWithdrawalRequest(_projectID).declines++;
+            }
+        }
     }
 }
