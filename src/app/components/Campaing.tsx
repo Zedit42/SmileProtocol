@@ -88,7 +88,7 @@ const Campaing = () => {
                 width={100}
                 height={60}
                 alt='table mascot'
-                className='absolute'
+                className='absolute -ml-2'
                 />
             </div>
         </div>
