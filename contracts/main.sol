@@ -12,7 +12,8 @@ contract Main {
     event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description);
     event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
 
-    SmileProtocolToken immutable SMILE;
+    ERC20Token immutable SMILE;
+    ERC20Token immutable CCIPBnM;
     Project[] private projects;
     mapping(uint256 => WithdrawalRequest[]) private requests;
     mapping(uint256 => mapping(uint256 => mapping(address => bool[2]))) private voteStatus;
@@ -20,8 +21,9 @@ contract Main {
     uint256 constant minSecondsToVote = 1209600;
     uint8 constant maxFailedWithdrawalRequests = 3;
 
-    constructor(){
-        SMILE = new SmileProtocolToken("Smile Protocol", "SMILE");
+    constructor(address _ccipBnM){
+        SMILE = new ERC20Token("Smile Protocol", "SMILE");
+        CCIPBnM = ERC20Token(_ccipBnM);
     }
 
     struct Project {
@@ -231,5 +233,23 @@ contract Main {
                 checkLastWithdrawalRequest(_projectID).declines++;
             }
         }
+    }
+
+    function buySMILE(uint256 _amount) external {
+        require(_amount > 0, "Amount must be greater than 0.");
+        require(_amount <= CCIPBnM.balanceOf(msg.sender), "Insufficient balance.");
+        require(_amount <= CCIPBnM.allowance(msg.sender, address(this)));
+
+        CCIPBnM.transferFrom(msg.sender, address(this), _amount);
+        SMILE.mint(msg.sender, _amount);
+    }
+
+    function sellSMILE(uint256 _amount) external {
+        require(_amount > 0, "Amount must be greater than 0.");
+        require(_amount <= SMILE.balanceOf(msg.sender), "Insufficient balance.");
+        require(_amount <= SMILE.allowance(msg.sender, address(this)));
+
+        SMILE.burnFrom(msg.sender, _amount);
+        CCIPBnM.transfer(msg.sender, _amount);
     }
 }
