@@ -10,6 +10,7 @@ const Profile = () => {
             width={150}
             height={200}
             alt='mascot'
+            className=' -mb-2'
         />
         <div className=' bg-[#FFF9ED] border-8 border-black w-[80vw] min-h-[70vh] flex'>
             <div className=' flex flex-col border-r-8 gap-2 border-black border-dashed w-[20vw] min-h-[70vh] h-full'>
@@ -78,60 +79,112 @@ const Profile = () => {
                 </div>
             </div>
             <div>
-                <div className='   mt-2 w-[60vw] h-[40%]'>
-                    <Link href={'/'} className=' flex flex-row shadow-lg p-4 w-[90%] gap-4 mx-auto '>
-                        <Image
-                            src={'/nft 1.png'}
-                            width={40}
-                            height={30}
-                            alt=' first project'
-                            className=' w-[6%] '
-                        />
-                        <div>
-                            <div className=' font-semibold text-lg'>
-                                Title
+                <div className=' flex-col flex w-[60vw] h-[40%] '>
+                    <div className=' text-2xl m-4'>
+                        Contributed Projects  : )
+                    </div>
+                    <div className=' mt-2  gap-2 flex flex-wrap mx-4'>
+                        <Link href={'/'} className=' flex flex-row  p-2 bg-[#FFEDE0]  w-[22rem] gap-4 mx-auto '>
+                            <Image
+                                src={'/pdessay.png'}
+                                width={100}
+                                height={100}
+                                alt=' first project'
+                                className=' min-w-[6rem] my-auto p-2 flex h-[6rem] '
+                            />
+                            <div className=' my-auto'>
+                                <div className=' font-semibold text-lg'>
+                                    Dessay
+                                </div>
+                                <div>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                                </div>
                             </div>
-                            <div>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                            <div className=' flex flex-col -mt-2 -mr-2'>
+                                <div className=' bg-[#6C7FAA] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#FDC962] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#EF7A5B] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#A2A0CF] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
                             </div>
-                        </div>
-                    </Link>
-                    <Link href={'/'} className=' flex flex-row shadow-lg p-4 w-[90%] gap-4 mx-auto '>
-                        <Image
-                            src={'/nft 2.png'}
-                            width={50}
-                            height={50}
-                            alt=' first project'
-                            className=' w-[6%] '
-                        />
-                        <div>
-                            <div className=' font-semibold text-lg'>
-                                Title
+                        </Link>
+                        <Link href={'/'} className=' flex flex-row p-2 bg-[#FFEDE0]  w-[22rem] gap-4 mx-auto '>
+                            <Image
+                                src={'/predesta.png'}
+                                width={100}
+                                height={100}
+                                alt=' first project'
+                                className=' min-w-[6rem] my-auto p-2 flex h-[6rem] '
+                            />
+                            <div className=' my-auto'>
+                                <div className=' font-semibold text-lg'>
+                                    Redesta
+                                </div>
+                                <div>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                                </div>
                             </div>
-                            <div>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                            <div className=' flex flex-col -mt-2 -mr-2'>
+                                <div className=' bg-[#6C7FAA] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#FDC962] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#EF7A5B] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#A2A0CF] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
                             </div>
-                        </div>
-                    </Link>
-                    <Link href={'/'} className=' flex flex-row shadow-lg p-4 w-[90%] gap-4 mx-auto '>
-                        <Image
-                            src={'/nft 3.png'}
-                            width={50}
-                            height={50}
-                            alt=' first project'
-                            className=' w-[6%] '
-                        />
-                        <div>
-                            <div className=' font-semibold text-lg'>
-                                Title
+                        </Link>
+                        <Link href={'/'} className=' flex flex-row p-2  bg-[#FFEDE0]  w-[22rem] gap-4 mx-auto '>
+                            <Image
+                                src={'/psmile.png'}
+                                width={120}
+                                height={120}
+                                alt=' first project'
+                                className=' min-w-[6rem] my-auto p-2 flex h-[6rem] '
+                            />
+                            <div className=' my-auto'>
+                                <div className=' font-semibold text-lg'>
+                                    Smile
+                                </div>
+                                <div>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                                </div>
                             </div>
-                            <div>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                            <div className=' flex flex-col -mt-2 -mr-2'>
+                                <div className=' bg-[#6C7FAA] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#FDC962] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#EF7A5B] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#A2A0CF] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
                             </div>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
+                    <button className=' text-xl mr-8 mt-4 text-end'>
+                        More...
+                    </button>
                 </div>
+
                 <div>
+                    {/* Profile Voting Layout */}
                     <div>
                         <div>
                             <div>

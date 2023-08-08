@@ -6,7 +6,7 @@ const Header = () => {
     <div className="bg-transparent px-10 mb-[5rem] pt-5">
         <div className="flex justify-between items-center">
           <Link href={'/'}>
-            <img src={'/smile.png'} alt="smile" className=' w-[13vw]' />
+            <img src={'/smile.png'} alt="smile" className=' w-[14rem]' />
           </Link>
           <Link href={'/profile/1'}>
             <div className=" hover:animate-jelly border-4 border-black flex px-[2rem] py-[0.5rem] my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75">

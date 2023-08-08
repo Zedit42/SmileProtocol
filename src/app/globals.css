@@ -8,6 +8,6 @@
 }
 
 .custom-pointer {
-  cursor: url('/cursor-hover.svg'), auto;
+  cursor: url('/cursor-hover.svg'),-webkit-image-set(url('/cursor-hover.svg') 1x) auto;
 }
 
