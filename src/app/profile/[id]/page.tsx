@@ -1,4 +1,5 @@
 import Header from '@/app/components/Header'
+import Hero from '@/app/components/Profile'
 import '../../globals.css'
 
 import React from 'react'
@@ -13,7 +14,7 @@ const Profile = () => {
       />
       <div className='custom-default'>
         <Header/>
-
+        <Hero/>
       </div>
     </main>
   )
