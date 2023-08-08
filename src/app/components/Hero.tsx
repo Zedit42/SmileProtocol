@@ -9,9 +9,9 @@ const Hero = () => {
   return (
     <div className="max-w-[75vw] mx-auto px-4 my-6 flex gap-[4rem] ">
       <div className=' '>
-        <div className=" w-[45vw] border-2 border-black">
+        <div className=" w-[45vw] border-8 border-black">
           <Image
-          src={'/boxbg.png'}
+          src={'/smileprotocol.gif'}
           width={1920}
           height={1080}
           alt='project image'
@@ -20,7 +20,7 @@ const Hero = () => {
         </div>
 
         <div className="flex flex-wrap justify-start gap-3 mt-8 ">
-            <Button text="Campaign" onClick={() => console.log('clicked!')} />
+            <Button text="Campaign" onClick={() => console.log('clicked!')} isSelected={true}/>
             <Button text="Roadmap" onClick={() => console.log('clicked!')} />
             <Button text="Updates" onClick={() => console.log('clicked!')} />
             <Button text="Supporters" onClick={() => console.log('clicked!')} />
@@ -32,7 +32,7 @@ const Hero = () => {
 
       <div className=" left-3 top-32 min-h-[70vh] h-full w-[22vw] pb-12 p-5 bg-[#FFF9ED] border-8 border-black text-center">
 
-        <h1 className=' font-extrabold text-3xl'>Turkey and Syria Earthquake</h1>
+        <h1 className=' font-extrabold text-3xl'>Smile Protocol</h1>
         <div className='flex flex-row justify-center items-center gap-1'><MdVerified size={20} className='text-[#7fe0c5]' /><h4 className=''>Verified Project</h4></div>
 
         <h1 className='mt-10 font-bold text-2xl'>158,788 / 235,000 $</h1>
@@ -42,26 +42,46 @@ const Hero = () => {
             <p className=' text-2xl ml-2'>. . .</p>
           </div>
           <div className=' border-black border-[0.3rem] w-full '>
-            <div className=' my-[0.5rem] w-full flex gap-2 items-center justify-center flex-wrap'>
-              <div className=' bg-[#8fb3ff] p-[0.8rem]  '>
+            <div className=' my-[0.5rem] w-full grid grid-rows-2 grid-cols-10 max-w-[90%] mx-auto gap-2 items-center justify-center'>
+              <div className=' bg-[#8fb3ff] p-[0.6rem]  '>
               </div>
-              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-[#8fb3ff] p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-gray-400 p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-gray-400 p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-gray-400 p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
               </div>
-              <div className=' bg-gray-400 p-[0.8rem] '>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
+              </div>
+              <div className=' bg-[#8fb3ff] p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
+              </div>
+              <div className=' bg-gray-400 p-[0.6rem] '>
               </div>
             </div>
           </div>

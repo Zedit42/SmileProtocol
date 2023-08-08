@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .custom-default {
   cursor: url('/cursor-default.svg'), auto;
 }

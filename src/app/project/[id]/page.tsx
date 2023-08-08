@@ -6,9 +6,9 @@ import React from 'react'
 
 const Project = () => {
   return (
-    <main className=''>
+    <main className=' cursor-none '>
       <img
-        src='/backgroundimage.png'
+        src='/backgroundimage.webp'
         className=' w-full h-full fixed -z-10'
         alt='bg image'
       />
