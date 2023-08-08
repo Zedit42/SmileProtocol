@@ -226,6 +226,8 @@ contract Main {
             voteStatus[_projectID][_reqID][msg.sender][1] = false;
             checkLastWithdrawalRequest(_projectID).declines += getVotePower(_projectID, msg.sender);
         }
+
+        emit newVote(msg.sender, _projectID, _reqID, _vote, getVotePower(_projectID, msg.sender));
     }
 
     function buySMILE(uint256 _amount) external {
