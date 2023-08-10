@@ -72,7 +72,8 @@ contract Main {
         uint256 _goalAmount,
         uint256 _nftThreshold,
         uint256 _nftMaxSupply,
-        string calldata _nftShort
+        string calldata _nftShort,
+        string calldata _description
     ) external returns (uint256) {
 
         uint256 currentID = projects.length;
@@ -81,11 +82,12 @@ contract Main {
         
         // EAS Attestation newProject
         /*
-        uint256 id currentID;
-        address projectOwner msg.sender;
-        string projectName _projectName;
-        uint256 goalAmount _goalAmount;
-        address projectNFTaddress nftContract;        
+        uint256 id currentID
+        address projectOwner msg.sender
+        string projectName _projectName
+        string description _description
+        uint256 goalAmount _goalAmount
+        address projectNFTaddress nftContract
         */
 
         projects.push(Project({
@@ -139,9 +141,9 @@ contract Main {
         // EAS Attestation donation
         /*
         bytes32 projectEAS_UID projects[_projectID].EAS_UID (reference)
-        uint256 id _projectID;
-        address supporter msg.sender;
-        string amount _amount;      
+        uint256 id _projectID
+        address supporter msg.sender
+        string amount _amount
         */
 
         addressToDonationAmount[msg.sender][_projectID] += _amount;
@@ -232,9 +234,9 @@ contract Main {
         // EAS Attestation claimWithdrawal
         /*
         bytes32 EAS_UID requests[_projectID][_reqID].EAS_UID (reference)
-        uint256 id _projectID;
-        uint256 projectOwner msg.sender;
-        uint256 amount requests[_projectID][_reqID].amount;        
+        uint256 id _projectID
+        uint256 projectOwner msg.sender
+        uint256 amount requests[_projectID][_reqID].amount
         */
     }
 
@@ -263,7 +265,7 @@ contract Main {
         /*
         bytes32 EAS_UID requests[_projectID][_reqID].EAS_UID (reference)
         address supporter msg.sender
-        bool vote _vote;        
+        bool vote _vote
         */
 
         
