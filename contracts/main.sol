@@ -13,6 +13,15 @@ contract Main {
     event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
     event newVote(address indexed _voter, uint256 indexed _projectID, uint256 _reqID, bool _vote, uint256 _power);
 
+    error InvalidAmount();
+    error NotActive();
+    error Insufficent();
+    error NoAllowance();
+    error Unauthorized();
+    error AlreadyActive();
+    error NoConsensus();
+    error AlreadyVoted();
+
     ERC20Token immutable SMILE;
     ERC20Token immutable CCIPBnM;
     Project[] private projects;
@@ -59,7 +68,7 @@ contract Main {
     }
 
     function deployNewProject(
-        //bytes32 _EAS_UID,
+        //bytes32 EAS_UID;
         string calldata _projectName,
         uint256 _goalAmount,
         uint256 _nftThreshold,
@@ -70,6 +79,8 @@ contract Main {
         uint256 currentID = projects.length;
 
         SmileProtocol_ProjectNFT nftContract = new SmileProtocol_ProjectNFT(_projectName, _nftShort);
+        
+        // EAS Attestation
 
         projects.push(Project({
             id: currentID,
@@ -99,7 +110,7 @@ contract Main {
             description: "",
             isActive: true
         }));
-
+       
         emit newProject(currentID ,_projectName, msg.sender, block.timestamp);
         return currentID;
     }
@@ -110,10 +121,10 @@ contract Main {
 
 
     function donate(uint256 _projectID, uint256 _amount) external {
-        require(_amount > 0, "The donation amount must be greater than 0.");
-        require(projects[_projectID].isActive, "This project is not active.");
-        require(_amount <= SMILE.balanceOf(msg.sender), "Insufficient balance.");
-        require(_amount <= SMILE.allowance(msg.sender, address(this)));
+        if(_amount <= 0) revert InvalidAmount();
+        if(!projects[_projectID].isActive) revert NotActive();
+        if(_amount > SMILE.balanceOf(msg.sender)) revert Insufficent();
+        if(_amount > SMILE.allowance(msg.sender, address(this))) revert NoAllowance();
         
         SMILE.transferFrom(msg.sender, address(this), _amount);
         Project storage project = projects[_projectID];
@@ -130,12 +141,12 @@ contract Main {
     }
 
     function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description) external {
-        require(msg.sender == projects[_projectID].projectOwner, "You are not authorized");
-        require(projects[_projectID].isActive, "This project is no longer active.");
-        require(_amount > 0, "The withdrawal amount must be greater than 0.");
-        require(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp, "There is already an active withdrawal request.");
-        require(_amount <= projects[_projectID].currentBalance, "Unvalid amount.");
-        require(_endTimestamp >= (block.timestamp + minSecondsToVote), "There must be a minimum 14 days voting period.");
+        if(msg.sender != projects[_projectID].projectOwner) revert Unauthorized();
+        if(projects[_projectID].isActive) revert NotActive();
+        if(_amount <= 0) revert InvalidAmount();
+        if(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp) revert AlreadyActive();
+        if(_amount > projects[_projectID].currentBalance) revert Insufficent();
+        if(_endTimestamp < (block.timestamp + minSecondsToVote)) revert InvalidAmount();
 
         if(checkLastWithdrawalRequest(_projectID).declines > checkLastWithdrawalRequest(_projectID).approvals){
             projects[_projectID].failedWithdrawalRequestCount++;
@@ -171,35 +182,26 @@ contract Main {
         }
     }
 
-    function checkWithdrawalRequest(uint256 _projectID, uint256 _reqID) public view returns(WithdrawalRequest memory) {
-        return requests[_projectID][_reqID];
-    }
-
     function checkLastWithdrawalRequest(uint256 _projectID) public view returns(WithdrawalRequest memory) {
         return requests[_projectID][(projects[_projectID].withdrawalRequestCount)];
     }
 
-    function checkVotes(uint256 _projectID, uint256 _reqID) internal view returns(bool){
-        return (checkWithdrawalRequest(_projectID, _reqID).approvals > checkWithdrawalRequest(_projectID, _reqID).declines);
-    }
-
     function claimWithdrawal(uint256 _projectID, uint256 _reqID) external {
-        require(msg.sender == projects[_projectID].projectOwner, "You are not authorized");
-        require(checkWithdrawalRequest(_projectID, _reqID).isActive, "This withdrawal is not active.");
-        require(block.timestamp > checkWithdrawalRequest(_projectID, _reqID).endTimestamp);
-        require(checkVotes(_projectID, _reqID), "There is no consensus!");
-        require(checkWithdrawalRequest(_projectID, _reqID).amount <= projects[_projectID].currentBalance);
+        if(msg.sender != projects[_projectID].projectOwner) revert Unauthorized();
+        if(block.timestamp < requests[_projectID][_reqID].endTimestamp) revert AlreadyActive();
+        if(requests[_projectID][_reqID].approvals < requests[_projectID][_reqID].declines) revert NoConsensus();
+        if(requests[_projectID][_reqID].amount > projects[_projectID].currentBalance) revert Insufficent();
 
         requests[_projectID][_reqID].isActive = false;
-        projects[_projectID].currentBalance -= checkWithdrawalRequest(_projectID, _reqID).amount;
-        SMILE.transfer(projects[_projectID].projectOwner, checkWithdrawalRequest(_projectID, _reqID).amount);
+        projects[_projectID].currentBalance -= requests[_projectID][_reqID].amount;
+        SMILE.transfer(projects[_projectID].projectOwner, requests[_projectID][_reqID].amount);
 
         emit claimedWithdrawalRequest(
             _projectID,
             _reqID,
             projects[_projectID].projectName,
-            checkWithdrawalRequest(_projectID, _reqID).amount,
-            checkWithdrawalRequest(_projectID, _reqID).description
+            requests[_projectID][_reqID].amount,
+            requests[_projectID][_reqID].description
         );
     }
 
@@ -207,15 +209,11 @@ contract Main {
         return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(_user);
     }
 
-    function myVotePower(uint256 _projectID) external view returns(uint256) {
-        return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(msg.sender);
-    }
-
     function vote(uint256 _projectID, uint256 _reqID, bool _vote) external {
-        require(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) > 0, "You are not eligible to vote.");
-        require(checkLastWithdrawalRequest(_projectID).isActive, "This withdrawal request is no longer active.");
-        require(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp, "You are late to vote.");
-        require(!voteStatus[_projectID][_reqID][msg.sender][0], "You have already voted.");
+        if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) revert Unauthorized();
+        if(!checkLastWithdrawalRequest(_projectID).isActive) revert NotActive();
+        if(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp) revert NotActive();
+        if(voteStatus[_projectID][_reqID][msg.sender][0]) revert AlreadyVoted();
 
         voteStatus[_projectID][_reqID][msg.sender][0] = true;
 
@@ -231,37 +229,36 @@ contract Main {
     }
 
     function buySMILE(uint256 _amount) external {
-        require(_amount > 0, "Amount must be greater than 0.");
-        require(_amount <= CCIPBnM.balanceOf(msg.sender), "Insufficient balance.");
-        require(_amount <= CCIPBnM.allowance(msg.sender, address(this)));
+        if(_amount <= 0) revert InvalidAmount();
+        if(_amount > CCIPBnM.balanceOf(msg.sender)) revert Insufficent();
+        if(_amount > CCIPBnM.allowance(msg.sender, address(this))) revert NoAllowance();
 
         CCIPBnM.transferFrom(msg.sender, address(this), _amount);
         SMILE.mint(msg.sender, _amount);
     }
 
     function sellSMILE(uint256 _amount) external {
-        require(_amount > 0, "Amount must be greater than 0.");
-        require(_amount <= SMILE.balanceOf(msg.sender), "Insufficient balance.");
-        require(_amount <= SMILE.allowance(msg.sender, address(this)));
+        if(_amount <= 0) revert InvalidAmount();
+        if(_amount > SMILE.balanceOf(msg.sender)) revert Insufficent();
+        if(_amount > SMILE.allowance(msg.sender, address(this))) revert NoAllowance();
 
         SMILE.burnFrom(msg.sender, _amount);
         CCIPBnM.transfer(msg.sender, _amount);
     }
 
     function getArchivedDonation(uint256 _projectID) external {
-        require(!projects[_projectID].isActive);
-        require(addressToDonationAmount[msg.sender][_projectID] > 0);
+        if(projects[_projectID].isActive) revert AlreadyActive();
+        if(addressToDonationAmount[msg.sender][_projectID] == 0) revert Insufficent();
 
         uint256 donationAmount = addressToDonationAmount[msg.sender][_projectID];
         addressToDonationAmount[msg.sender][_projectID] = 0;
         SMILE.transfer(msg.sender, donationAmount);
     }
 
-    function reloadProjectActivity(uint256 _projectID) external returns(bool){
-        require(projects[_projectID].isActive);
-        require(projects[_projectID].failedWithdrawalRequestCount == 2);
-        require(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp);
-        require(checkLastWithdrawalRequest(_projectID).isActive);
+    function reloadProjectActivity(uint256 _projectID) external {
+        if(!projects[_projectID].isActive) revert NotActive();
+        if(projects[_projectID].failedWithdrawalRequestCount != 2) revert InvalidAmount();
+        if(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp) revert AlreadyActive();
 
         if(checkLastWithdrawalRequest(_projectID).declines > checkLastWithdrawalRequest(_projectID).approvals){
             requests[_projectID][(requests[_projectID].length)-1].isActive = false;
