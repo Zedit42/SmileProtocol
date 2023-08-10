@@ -40,23 +40,22 @@ contract Main {
         uint256 id;
         address projectOwner;
         //bytes32 EAS_UID;
-        string projectName;
         uint256 currentBalance;
         uint256 totalDonationAmount;
-        uint256 goalAmount;
         uint256 withdrawalRequestCount;
         uint256 failedWithdrawalRequestCount;
         ProjectNFT projectNFT;
+        uint256 goalAmount;
         bool isActive;
     }
 
     struct WithdrawalRequest{
+        //bytes32 EAS_UID
         uint256 requestID;
         uint256 amount;
         uint256 approvals;
         uint256 declines;
         uint256 endTimestamp;
-        string description;
         bool isActive;
     }
 
@@ -64,11 +63,11 @@ contract Main {
         address nftAddress;
         uint256 threshold;
         uint256 maxSupply;
+        uint256 holders;
         uint256 voterCount;
     }
 
     function deployNewProject(
-        //bytes32 EAS_UID;
         string calldata _projectName,
         uint256 _goalAmount,
         uint256 _nftThreshold,
@@ -80,13 +79,19 @@ contract Main {
 
         SmileProtocol_ProjectNFT nftContract = new SmileProtocol_ProjectNFT(_projectName, _nftShort);
         
-        // EAS Attestation
+        // EAS Attestation newProject
+        /*
+        uint256 id currentID;
+        address projectOwner msg.sender;
+        string projectName _projectName;
+        uint256 goalAmount _goalAmount;
+        address projectNFTaddress nftContract;        
+        */
 
         projects.push(Project({
             id: currentID,
             projectOwner: msg.sender,
-            //EAS_UID: _EAS_UID,
-            projectName: _projectName,
+            //EAS_UID: EAS_UID,
             currentBalance: 0,
             totalDonationAmount: 0,
             goalAmount: _goalAmount,
@@ -95,19 +100,18 @@ contract Main {
             projectNFT: ProjectNFT({
                 nftAddress: address(nftContract),
                 threshold: _nftThreshold,
-                maxSupply: _nftMaxSupply,
                 voterCount: 0
             }),
             isActive: true
         }));
 
         requests[currentID].push(WithdrawalRequest({
+            //EAS_UID: EAS_UID,
             requestID: 0,
             amount: 0,
             approvals: 0,
             declines: 0,
             endTimestamp: 0,
-            description: "",
             isActive: true
         }));
        
@@ -123,6 +127,7 @@ contract Main {
     function donate(uint256 _projectID, uint256 _amount) external {
         if(_amount <= 0) revert InvalidAmount();
         if(!projects[_projectID].isActive) revert NotActive();
+        if(_amount > projects[_projectID].goalAmount - projects[_projectID].currentBalance) revert InvalidAmount();
         if(_amount > SMILE.balanceOf(msg.sender)) revert Insufficent();
         if(_amount > SMILE.allowance(msg.sender, address(this))) revert NoAllowance();
         
@@ -131,10 +136,19 @@ contract Main {
         project.totalDonationAmount += _amount;
         project.currentBalance += _amount;
 
+        // EAS Attestation donation
+        /*
+        bytes32 projectEAS_UID projects[_projectID].EAS_UID (reference)
+        uint256 id _projectID;
+        address supporter msg.sender;
+        string amount _amount;      
+        */
+
         addressToDonationAmount[msg.sender][_projectID] += _amount;
         
         if(_amount >= project.projectNFT.threshold) {
             uint256 votePower = _amount / project.projectNFT.threshold;
+            if(SmileProtocol_ProjectNFT(projects.projectNFT.nftAddress).balanceOf(msg.sender) == 0) project.projectNFT.holders++;
             SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
             project.projectNFT.voterCount += votePower;
         }
@@ -158,14 +172,25 @@ contract Main {
             projects[_projectID].isActive = false;
             return;
         } else {
+
+            // EAS Attestation newWithdrawalRequest
+            /*
+            bytes32 projectEAS_UID projects[_projectID].EAS_UID (reference)
+            uint256 projectID _projectID
+            uint256 requestID projects[_projectID].withdrawalRequestCount
+            uint256 amount _amount
+            uint256 endTimestamp
+            string description _description
+            */
+
             requests[_projectID].push(WithdrawalRequest({
-            requestID: projects[_projectID].withdrawalRequestCount,
-            amount: _amount,
-            approvals: 0,
-            declines: 0,
-            endTimestamp: _endTimestamp,
-            description: _description,
-            isActive: true
+                //EAS_UID: EAS_UID
+                requestID: projects[_projectID].withdrawalRequestCount,
+                amount: _amount,
+                approvals: 0,
+                declines: 0,
+                endTimestamp: _endTimestamp,
+                isActive: true
             }));
 
             emit newWithdrawalRequest(
@@ -203,6 +228,14 @@ contract Main {
             requests[_projectID][_reqID].amount,
             requests[_projectID][_reqID].description
         );
+
+        // EAS Attestation claimWithdrawal
+        /*
+        bytes32 EAS_UID requests[_projectID][_reqID].EAS_UID (reference)
+        uint256 id _projectID;
+        uint256 projectOwner msg.sender;
+        uint256 amount requests[_projectID][_reqID].amount;        
+        */
     }
 
     function getVotePower(uint256 _projectID, address _user) internal view returns(uint256) {
@@ -224,6 +257,16 @@ contract Main {
             voteStatus[_projectID][_reqID][msg.sender][1] = false;
             checkLastWithdrawalRequest(_projectID).declines += getVotePower(_projectID, msg.sender);
         }
+
+        
+        // EAS Attestation vote
+        /*
+        bytes32 EAS_UID requests[_projectID][_reqID].EAS_UID (reference)
+        address supporter msg.sender
+        bool vote _vote;        
+        */
+
+        
 
         emit newVote(msg.sender, _projectID, _reqID, _vote, getVotePower(_projectID, msg.sender));
     }
