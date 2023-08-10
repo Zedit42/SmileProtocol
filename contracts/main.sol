@@ -148,7 +148,7 @@ contract Main {
 
         addressToDonationAmount[msg.sender][_projectID] += _amount;
         
-        if(_amount >= project.projectNFT.threshold) {
+        if(_amount >= project.projectNFT.threshold && project.projectNFT.holders < projects.projectNFT.maxSupply) {
             uint256 votePower = _amount / project.projectNFT.threshold;
             if(SmileProtocol_ProjectNFT(projects.projectNFT.nftAddress).balanceOf(msg.sender) == 0) project.projectNFT.holders++;
             SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
