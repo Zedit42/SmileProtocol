@@ -9,7 +9,7 @@ contract Main {
 
     event newProject(uint256 indexed _projectID, string _projectName, address indexed _owner, uint256 _timestamp);
     event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
-    event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description);
+    event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount);
     event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
     event newVote(address indexed _voter, uint256 indexed _projectID, uint256 _reqID, bool _vote, uint256 _power);
 
@@ -39,7 +39,8 @@ contract Main {
     struct Project {
         uint256 id;
         address projectOwner;
-        //bytes32 EAS_UID;
+        string projectName;
+        bytes32 EAS_UID;
         uint256 currentBalance;
         uint256 totalDonationAmount;
         uint256 withdrawalRequestCount;
@@ -50,7 +51,7 @@ contract Main {
     }
 
     struct WithdrawalRequest{
-        //bytes32 EAS_UID
+        bytes32 EAS_UID;
         uint256 requestID;
         uint256 amount;
         uint256 approvals;
@@ -73,27 +74,18 @@ contract Main {
         uint256 _nftThreshold,
         uint256 _nftMaxSupply,
         string calldata _nftShort,
-        string calldata _description
+        bytes32 _EAS_UID
     ) external returns (uint256) {
 
         uint256 currentID = projects.length;
 
         SmileProtocol_ProjectNFT nftContract = new SmileProtocol_ProjectNFT(_projectName, _nftShort);
-        
-        // EAS Attestation newProject
-        /*
-        uint256 id currentID
-        address projectOwner msg.sender
-        string projectName _projectName
-        string description _description
-        uint256 goalAmount _goalAmount
-        address projectNFTaddress nftContract
-        */
 
         projects.push(Project({
             id: currentID,
             projectOwner: msg.sender,
-            //EAS_UID: EAS_UID,
+            projectName: _projectName,
+            EAS_UID: _EAS_UID,
             currentBalance: 0,
             totalDonationAmount: 0,
             goalAmount: _goalAmount,
@@ -102,13 +94,15 @@ contract Main {
             projectNFT: ProjectNFT({
                 nftAddress: address(nftContract),
                 threshold: _nftThreshold,
+                maxSupply: _nftMaxSupply,
+                holders: 0,
                 voterCount: 0
             }),
             isActive: true
         }));
 
         requests[currentID].push(WithdrawalRequest({
-            //EAS_UID: EAS_UID,
+            EAS_UID: _EAS_UID,
             requestID: 0,
             amount: 0,
             approvals: 0,
@@ -150,13 +144,13 @@ contract Main {
         
         if(_amount >= project.projectNFT.threshold) {
             uint256 votePower = _amount / project.projectNFT.threshold;
-            if(SmileProtocol_ProjectNFT(projects.projectNFT.nftAddress).balanceOf(msg.sender) == 0) project.projectNFT.holders++;
+            if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) project.projectNFT.holders++;
             SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
             project.projectNFT.voterCount += votePower;
         }
     }
 
-    function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description) external {
+    function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description, bytes32 _EAS_UID) external {
         if(msg.sender != projects[_projectID].projectOwner) revert Unauthorized();
         if(projects[_projectID].isActive) revert NotActive();
         if(_amount <= 0) revert InvalidAmount();
@@ -186,7 +180,7 @@ contract Main {
             */
 
             requests[_projectID].push(WithdrawalRequest({
-                //EAS_UID: EAS_UID
+                EAS_UID: _EAS_UID,
                 requestID: projects[_projectID].withdrawalRequestCount,
                 amount: _amount,
                 approvals: 0,
@@ -227,8 +221,7 @@ contract Main {
             _projectID,
             _reqID,
             projects[_projectID].projectName,
-            requests[_projectID][_reqID].amount,
-            requests[_projectID][_reqID].description
+            requests[_projectID][_reqID].amount
         );
 
         // EAS Attestation claimWithdrawal
