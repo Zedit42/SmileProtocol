@@ -8,10 +8,11 @@ const hre = require("hardhat");
 
 async function main() {
   
+  const mainFactory = await hre.ethers.getContractFactory("Main");
+  const main = await mainFactory.deploy("0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05");
+ //const main= await hre.ethers.deployContract("Main", ["0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05"]);
 
-  const main= await hre.ethers.deployContract("Main", ["0"]);
-
-  await main.waitForDeployment();
+  await main.deployed();
   console.log("main deployed to:", main.address);
   
 }
