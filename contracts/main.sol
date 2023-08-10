@@ -247,4 +247,25 @@ contract Main {
         SMILE.burnFrom(msg.sender, _amount);
         CCIPBnM.transfer(msg.sender, _amount);
     }
+
+    function getArchivedDonation(uint256 _projectID) external {
+        require(!projects[_projectID].isActive);
+        require(addressToDonationAmount[msg.sender][_projectID] > 0);
+
+        uint256 donationAmount = addressToDonationAmount[msg.sender][_projectID];
+        addressToDonationAmount[msg.sender][_projectID] = 0;
+        SMILE.transfer(msg.sender, donationAmount);
+    }
+
+    function reloadProjectActivity(uint256 _projectID) external returns(bool){
+        require(projects[_projectID].isActive);
+        require(projects[_projectID].failedWithdrawalRequestCount == 2);
+        require(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp);
+        require(checkLastWithdrawalRequest(_projectID).isActive);
+
+        if(checkLastWithdrawalRequest(_projectID).declines > checkLastWithdrawalRequest(_projectID).approvals){
+            requests[_projectID][(requests[_projectID].length)-1].isActive = false;
+            projects[_projectID].isActive = false;
+        }
+    }
 }
