@@ -312,6 +312,10 @@ contract Main {
         CCIPBnM.transfer(msg.sender, _amount);
     }
 
+    function getSmileAddress() external view returns(address) {
+        return address(SMILE);
+    }
+
     /* function getArchivedDonation(uint256 _projectID) external {
         if(projects[_projectID].isActive) revert AlreadyActive();
         if(addressToDonationAmount[msg.sender][_projectID] == 0) revert Insufficent();

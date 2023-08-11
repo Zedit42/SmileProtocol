@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -6,5 +7,16 @@ module.exports = {
   optimizer: {
     enabled: true,
     runs: 200,
+  },
+  networks: {
+    polygonMumbai: {
+      url: process.env.POLYGON_MUMBAI_RPC_URL,
+      accounts: [process.env.PRIVATE_KEY],
+    },
+    optimismGoerli: {
+      url: process.env.OPTIMISM_GOERLI_RPC_URL,
+      accounts: [process.env.PRIVATE_KEY],
+    }
+
   }
 };

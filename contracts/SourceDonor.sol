@@ -37,8 +37,6 @@ contract SourceDonor {
         tokenAmounts[0] = tokenTransfer;
 
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            
-
             receiver: abi.encode(receiver),
             data: abi.encodeWithSignature("buySmileAndDonate(uint256,uint256)", _projectId, _tokenAmount),
             tokenAmounts: tokenAmounts,

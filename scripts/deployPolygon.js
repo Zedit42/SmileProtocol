@@ -5,17 +5,16 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
-const { getPayFeesIn, getPrivateKey, getProviderRpcUrl, getRouterConfig } = require("./utils");
+const { getRouterConfig } = require("./utils");
 
 async function main() {
   
-  const mainFactory = await hre.ethers.getContractFactory("Main");
-  const main = await mainFactory.deploy("0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05");
- //const main= await hre.ethers.deployContract("Main", ["0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05"]);
+  const sourceDonorFactory = await hre.ethers.getContractFactory("SourceDonor");
+  const sourceDonor = await sourceDonorFactory.deploy(getRouterConfig("polygonMumbai").router);
 
-  await main.deployed();
-  console.log("main deployed to:", main.address);
-  console.log(getRouterConfig("ethereumSepolia"));
+  await sourceDonor.deployed();
+  console.log("sourceDonor deployed to:", sourceDonor.address);
+  console.log(getRouterConfig("polygonMumbai").address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
