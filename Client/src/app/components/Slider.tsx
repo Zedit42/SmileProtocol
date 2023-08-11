@@ -10,12 +10,13 @@ interface Slide {
     src: string;
     title: string;
     href: string;
+    creator:string;
   }
   
   const slide: Slide[] = [
-    { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1',  },
-    { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1',  },
-    { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1',  },
+    { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1',creator:'BlockchainDEU'  },
+    { id: 2, src: '/redestaproject.png', title: 'Redesta', href:'/project/1',creator:'BlockchainDEU'  },
+    { id: 3, src: '/dessayproject.png', title: 'Dessay', href:'/project/1',creator:'BlockchainDEU' },
   ];
 export default function Slider(): JSX.Element {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
@@ -34,7 +35,7 @@ export default function Slider(): JSX.Element {
   }, []);
 
   return (
-    <div className="relative w-[80vw] h-[60vh]  mx-auto  bg-[#FFF9ED] ">
+    <div className="relative w-[80vw] h-[70vh]  mx-auto  bg-[#FFF9ED] ">
       {slide.map((slide, index) => (
         <Link
           href={slide.href}
@@ -50,8 +51,8 @@ export default function Slider(): JSX.Element {
                 alt={`Slider image ${index + 1}`}
             />
             <div className=' mx-auto flex flex-col my-auto py-4'>
-                <div className=' text-5xl'>{slide.title}</div>
-                <div className=' text-3xl text-center'>By BlockchainDEU</div>
+                <div className=' text-5xl text-center'>{slide.title}</div>
+                <div className=' text-3xl text-center'>By {slide.creator}</div>
                 <div className=' justify-center flex mt-8'>
                         <Image
                             src={'/smile_frame.png'}

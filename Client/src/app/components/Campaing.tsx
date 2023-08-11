@@ -27,7 +27,9 @@ const Campaing = () => {
                         </div>
                         <div className=' max-w-[60%] mb-4'>
                             <p className=' text-xl font-bold'>BlockchainDEU</p>
-                            <p>BlockchainDEU is a student community that wants to inform people about everything related to blockchain such as Metaverse, Web 3.0, Cryptocurrencies, NFT, the meaning of Decentralization and Network structures, and who want to move forward together on this journey and try to do these together as Dokuz Eylül students.</p>
+                            <p>Established in 2018, Dokuz Eylül Blockchain Community has continuously evolved to define its mission, vision, and core team.</p>
+                            <p>Located at Izmir</p>
+                            <p>contact@blockchaindeu.com</p>
                         </div>
                     </div>
                 </div>

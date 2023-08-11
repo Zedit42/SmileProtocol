@@ -15,23 +15,23 @@ const Feed = () => {
       
       const posts: Posts[] = [
         { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
-        { id: 1, src: '/smileprotocol.gif', title: 'Smile Protocol', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 2, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 3, src: '/dessayproject.png', title: 'Dessay', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 4, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 5, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 6, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 7, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 8, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 9, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 10, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 11, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
+        { id: 12, src: '/redestaproject.png', title: 'Redesta', href:'/project/1', percent:90, nftOwner:20, totalSupply:100,},
 
       ];
   return (
     <div className=' flex flex-wrap w-[80vw] mx-auto h-full gap-8 justify-center'>
         {posts.map((posts, index) => (
-            <Link href={posts.href} key={posts.id} className=' flex flex-col border-8 justify-between border-black bg-[#FFF9ED] max-w-[20rem] min-h-[15rem] w-full h-full' >
+            <Link href={posts.href} key={index} className=' flex flex-col border-8 justify-between border-black bg-[#FFF9ED] max-w-[20rem] min-h-[15rem] w-full h-full' >
                 <div>
                     <Image
                         src={posts.src}

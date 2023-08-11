@@ -1,6 +1,5 @@
 "use client"
 import './globals.css'
-import type { Metadata } from 'next'
 import { Chicle } from 'next/font/google'
 import '@rainbow-me/rainbowkit/styles.css';
 import {
@@ -19,10 +18,9 @@ import {
   polygon,
   optimism,
   arbitrum,
-  zora,
+  sepolia,
   goerli,
   gnosis,
-  haqqMainnet,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -33,8 +31,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     optimism,
     arbitrum,
     gnosis,
-    haqqMainnet,
-    zora,
+    sepolia,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
   [publicProvider()]
@@ -72,7 +69,6 @@ const wagmiConfig = createConfig({
 
 const chicle = Chicle({ subsets: ['latin'], weight:'400' })
 
-
 export default function RootLayout({
   children,
 }: {
@@ -81,7 +77,7 @@ export default function RootLayout({
   return (
 
     <html lang="en">
-
+      
       <body className={chicle.className}>
       <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider appInfo={demoAppInfo} chains={chains}>
