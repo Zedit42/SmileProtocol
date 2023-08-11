@@ -5,6 +5,7 @@ import "./ERC721.sol";
 import "./ERC20.sol";
 
 
+
 contract Main {
 
     event newProject(uint256 indexed _projectID, string _projectName, address indexed _owner, uint256 _timestamp);
@@ -274,6 +275,12 @@ contract Main {
 
         CCIPBnM.transferFrom(msg.sender, address(this), _amount);
         SMILE.mint(msg.sender, _amount);
+    }
+
+    function buySmileAndDonate(uint256 _projectID) external {
+        if(CCIPBnM.balanceOf(msg.sender) <= 0) revert Insufficent();
+        if(CCIPBnM.allowance(msg.sender, address(this)) <= 0) revert NoAllowance();
+
     }
 
     function sellSMILE(uint256 _amount) external {

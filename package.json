@@ -9,6 +9,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@chainlink/contracts": "^0.6.1",
+    "@chainlink/contracts-ccip": "^0.7.6",
     "@openzeppelin/contracts": "^4.8.1",
     "hardhat": "^2.12.7"
   },

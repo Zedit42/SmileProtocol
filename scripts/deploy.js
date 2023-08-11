@@ -5,6 +5,7 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
+const { getPayFeesIn, getPrivateKey, getProviderRpcUrl, getRouterConfig } = require("./utils");
 
 async function main() {
   
@@ -14,7 +15,7 @@ async function main() {
 
   await main.deployed();
   console.log("main deployed to:", main.address);
-  
+  console.log(getRouterConfig("ethereumSepolia"));
 }
 
 // We recommend this pattern to be able to use async/await everywhere
