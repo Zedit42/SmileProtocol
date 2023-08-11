@@ -13,7 +13,7 @@ const Profile = () => {
             className=' -mb-2'
         />
         <div className=' bg-[#FFF9ED] border-8 border-black w-[80vw] min-h-[70vh] flex mb-10'>
-            <div className=' flex flex-col border-r-8 gap-2 border-black border-dashed w-[20vw] min-h-[70vh] h-full'>
+            <div className=' flex flex-col border-r-8 gap-2 border-black border-dashed w-[20vw] min-h-[70vh]'>
                 <div className=' flex flex-col'>
                     <div className=' justify-center flex mt-8'>
                         <Image
@@ -81,7 +81,7 @@ const Profile = () => {
             <div>
                 <div className=' flex-col flex w-[60vw] mb-5'>
                     <div className=' text-2xl m-4'>
-                        Smiled Projects  🤡
+                        Smiled Projects  
                     </div>
                     <div className=' mt-2  gap-2 flex flex-wrap mx-4'>
                         <Link href={'/'} className=' flex flex-row  p-2 bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>

@@ -67,9 +67,6 @@ const Stake = () => {
                     <div className=' flex w-full '>
                         <div className=' text-3xl text-center w-full '>You earned this for smiled with your donations </div>
                     </div>
-
-
-
                     <div className=' flex items-center justify-center text-2xl gap-2'>
                         <div>0</div>
                         <div>SMILE</div>

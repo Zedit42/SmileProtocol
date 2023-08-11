@@ -21,6 +21,8 @@ import {
   arbitrum,
   zora,
   goerli,
+  gnosis,
+  haqqMainnet,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -30,6 +32,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     polygon,
     optimism,
     arbitrum,
+    gnosis,
+    haqqMainnet,
     zora,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
