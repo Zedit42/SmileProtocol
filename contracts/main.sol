@@ -8,9 +8,7 @@ import "./ERC20.sol";
 
 contract Main {
 
-    event newProject(uint256 indexed _projectID, string _projectName, address indexed _owner, uint256 _timestamp);
     event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
-    event claimedWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount);
     event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
     event newVote(address indexed _voter, uint256 indexed _projectID, uint256 _reqID, bool _vote, uint256 _power);
 
@@ -113,7 +111,7 @@ contract Main {
             isActive: true
         })); */
        
-        emit newProject(currentID ,_projectName, msg.sender, block.timestamp);
+
         return currentID;
     }
 
