@@ -1,11 +1,14 @@
 "use client"
-import React,  from 'react'
+import React,{useEffect, useState}from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {EASSCAN_URL, SchemaType} from "../../../constants"
-import {makeAttestation} from "../../../eas";
+import {getDatasFromGraphQL} from "../../../constants/global";
+import {makeAttestation,getStringFromHexString} from "../../../eas";
+import {ApolloQueryResult} from "@apollo/client";
+import {SchemaDecodedItem} from "@ethereum-attestation-service/eas-sdk";
 import toast, { Toaster } from 'react-hot-toast';
-interface ProfileProps {
+/* interface ProfileProps {
     encodedData:{
         data:string,
         value:{
@@ -13,24 +16,63 @@ interface ProfileProps {
         }
     }[];
     attestationData:string[]
+} */
+
+interface AttesterData {
+    id:string,
+    data:string,
 }
 
 
 
-const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
-
-    const createAttestation = async(answer) => {
+const Profile  = () => {
+    const [cleanData,setCleanData] = useState<string[]>([])
+    const [ready,setReady] = useState(false)
+    const [isGrayed,setGrayed] = useState(false)
+    const [attestationData,setAttestationData] = useState<string[]>([])
+    const createAttestation = async(answer:boolean) => {
         try {
+            setGrayed(true)
             const toastId = toast.loading("Your vote saving to EAS")
-            let [res] = await Promise.all([makeAttestation(SchemaType.Vote, window.ethereum,answer)])
+            await Promise.all([makeAttestation(SchemaType.Vote, window.ethereum,answer)])
             toast.success("Your vote saved at EAS successfully!",{
                 id:toastId
             })
+            window.location.reload()
         }catch(error) {
             toast.error("Error")
+            throw error
         }
 
     }
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                var response: ApolloQueryResult<any> = await getDatasFromGraphQL()
+                const attesterData: AttesterData[] = response.data.attestations
+    
+                const attestionID: string[] = []
+                const encodedData: string[] = [];
+                attesterData.forEach((veri) => {
+                    const atID = veri["id"]
+                    const encoded: SchemaDecodedItem[] = getStringFromHexString(veri["data"], SchemaType.Vote)
+                    attestionID.push(atID)
+                    encodedData.push(encoded);
+                })
+                setCleanData(encodedData)
+                setAttestationData(attestionID)
+                setReady(true) // Sayfa renderlanabilir
+            } catch (error) {
+                console.error("GRAPHQL ERROR")
+                throw error
+            }
+        }, )
+    
+        return () => {
+            clearInterval(interval);
+        };
+    }, [attestationData]);
+
 
 
     const renderData = (data, attestationData) => {
@@ -39,12 +81,27 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
             const statusColor = isApproved ? '#65b550' : '#b55052';
             const statusMessage = isApproved ? 'approved' : 'rejected';
             const imageUrl = parseInt(item[0]?.value?.value) === 1 ? '/psmile.png' : '/pdessay.png';
-            const emoji = isApproved ? '✅':'❌'
+            const emoji = isApproved ?             
+            <Image 
+                src={'/confirm.png'}
+                className=' hover:scale-105 duration-300'
+                width={32}
+                height={32}
+                alt='approve'
+            />
+            :
+            <Image 
+                src={'/cross.png'}
+                className=' hover:scale-105 duration-300'
+                width={32}
+                height={32}
+                alt='refuse'
+            />
             return (
                 <div key={index} className='flex flex-row gap-2 items-center mx-4'>
                     <Image src={imageUrl} width={50} height={50} alt={isApproved ? 'psmile' : 'pdessay'}/>
                     <Link href={`${EASSCAN_URL}${attestationData[index]}`}>
-                        <h1 className={`text-[${statusColor}] text-xl`}>
+                        <h1 className={`text-[${statusColor}] text-xl flex gap-2`}>
                             $20 {statusMessage} for Dessay{emoji}
                         </h1>
                     </Link>
@@ -139,7 +196,7 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
                 <div className=' mt-2  gap-2 flex flex-wrap mx-4'>
                     <Link href={'/'} className=' flex flex-row  p-2 bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
                         <Image
-                            src={'/pdessay.png'}
+                            src={'/psmile.png'}
                             width={100}
                             height={100}
                             alt=' first project'
@@ -147,7 +204,7 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
                         />
                         <div className=' my-auto'>
                             <div className=' font-semibold text-lg'>
-                                Dessay
+                                Smile
                             </div>
                             <div>
                                 Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -199,36 +256,40 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
                             </div>
                         </div>
                     </Link>
-                    <Link href={'/project/1'} className=' flex flex-row p-2  bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
-                        <Image
-                            src={'/psmile.png'}
-                            width={120}
-                            height={120}
-                            alt=' first project'
-                            className=' min-w-[6rem] my-auto p-2 flex h-[6rem] '
-                        />
-                        <div className=' my-auto'>
-                            <div className=' font-semibold text-lg'>
-                                Smile
+                    <Link href={'/project/1'} className=' flex flex-col p-2  bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
+                        <div className=' flex '>
+                            <Image
+                                src={'/pdessay.png'}
+                                width={120}
+                                height={120}
+                                alt=' first project'
+                                className=' min-w-[6rem] my-auto p-2 flex h-[6rem] '
+                            />
+                            <div className=' my-auto'>
+                                <div className=' font-semibold text-lg'>
+                                    Dessay
+                                </div>
+                                <div>
+                                    Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                </div>
                             </div>
-                            <div>
-                                Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            <div className=' flex flex-col -mt-2 -mr-2'>
+                                <div className=' bg-[#6C7FAA] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#FDC962] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#EF7A5B] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
+                                <div className=' bg-[#A2A0CF] w-[2vw] h-[%20] '>
+                                    &nbsp;
+                                </div>
                             </div>
                         </div>
-                        <div className=' flex flex-col -mt-2 -mr-2'>
-                            <div className=' bg-[#6C7FAA] w-[2vw] h-[%20] '>
-                                &nbsp;
-                            </div>
-                            <div className=' bg-[#FDC962] w-[2vw] h-[%20] '>
-                                &nbsp;
-                            </div>
-                            <div className=' bg-[#EF7A5B] w-[2vw] h-[%20] '>
-                                &nbsp;
-                            </div>
-                            <div className=' bg-[#A2A0CF] w-[2vw] h-[%20] '>
-                                &nbsp;
-                            </div>
-                        </div>
+                        <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'>Withdraw</button>
+
                     </Link>
                 </div>
                 <button className=' text-xl mr-8 mt-4 text-end'>
@@ -237,20 +298,23 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
             </div>
             <div className=' flex flex-row border-t-8 border-black border-dashed'>
                 <div className='flex flex-col gap-4 p-3 w-[50%] h-[40vh] overflow-auto'>
+                    <div className=' text-2xl mx-4'>
+                        Smile Offers
+                    </div>
                     <div className=' flex flex-row justify-between'>
                         <div className='flex flex-row items-center gap-2'>
-                            <Image src="/pdessay.png" width={70} height={70} alt='pdessay' />
+                            <Image src="/psmile.png" width={70} height={70} alt='pdessay' />
                             <div className='flex flex-col text-sm'>
-                                <h1 className='text-xl'>Dessay asks for $20</h1>
+                                <h1 className='text-xl'>Smile asks for $20</h1>
                                 <p className=' animate-pulse'>last 2 days...</p>
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer'
+                            <Image src="/Approve.png" width={100} height={100} alt='approve' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
                             onClick={()=>
                                 createAttestation(true)
                             }/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer'
+                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
                             onClick={()=>
                                 createAttestation(false)
                             }
@@ -266,21 +330,8 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer'/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer'/>
-                        </div>
-                    </div>
-                    <div className=' flex flex-row justify-between'>
-                        <div className='flex flex-row items-center gap-2'>
-                            <Image src="/psmile.png" width={70} height={70} alt='pdessay' />
-                            <div className='flex flex-col text-sm'>
-                                <h1 className='text-xl'>Smile asks for $20</h1>
-                                <p className=' animate-pulse'>last 2 days...</p>
-                            </div>
-                        </div>
-                        <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer'/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer'/>
+                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
+                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
                         </div>
                     </div>
                     <div className=' flex flex-row justify-between'>
@@ -292,16 +343,29 @@ const Profile:React.FC<ProfileProps> = ({encodedData,attestationData}) => {
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer'/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer'/>
+                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
+                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
                         </div>
                     </div>
+
                 </div>
                 {/*Buraya EASTAN VERİLER GELECEK*/}
                 <div className='flex flex-col gap-2 p-3 overflow-auto w-[50%] h-[40vh] border-black border-dashed border-l-8'>
+                    <div className=' flex justify-between'>
+                        <div className=' text-2xl mx-4'>
+                            Smiled Offers
+                        </div>
+                        <div className=' underline text-gray-600'>
+                            Click hearts for details!
+                        </div>
+                    </div>
+                  
                     {
-                        renderData(encodedData,attestationData)
+                        ready ? renderData(cleanData,attestationData): "Hello"
+                        
+                        
                     }
+                    
                 <Toaster/>
                 </div>
             </div>

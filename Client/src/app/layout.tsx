@@ -10,28 +10,20 @@ import {
   injectedWallet,
   metaMaskWallet,
   coinbaseWallet,
-  safeWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  sepolia,
+  avalancheFuji,
+  optimismGoerli,
   goerli,
-  gnosis,
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    gnosis,
-    sepolia,
+    avalancheFuji,
+    optimismGoerli,
     ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
   [publicProvider()]
@@ -49,8 +41,9 @@ const connectors = connectorsForWallets([
     wallets: [
       injectedWallet({ chains }),
       metaMaskWallet({ projectId, chains }),
-      safeWallet({ chains }),
     ],
+    
+    
   },
   {
     groupName: 'Others',
@@ -59,6 +52,8 @@ const connectors = connectorsForWallets([
     ],
   },
 ]);
+
+
 
 const wagmiConfig = createConfig({
   autoConnect: true,

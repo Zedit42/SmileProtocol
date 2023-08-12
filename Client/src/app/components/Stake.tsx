@@ -1,9 +1,12 @@
 "use client"
 import Image from 'next/image';
 import { useState } from 'react';
-import Button from './Button';
+import { usePrepareContractWrite } from 'wagmi'
+
 
 const Stake = () => {
+  const [tokenId, setTokenId] = useState('')
+
   const [activeTab, setActiveTab] = useState(1);
   const [inputValue, setInputValue] = useState<number | ''>(0);
 
@@ -11,12 +14,32 @@ const Stake = () => {
     const newValue = event.target.value !== '' ? parseFloat(event.target.value) : '';
     setInputValue(newValue);
   };
+  const [rotation, setRotation] = useState(0);
+
+  const handleSVGClick = () => {
+    setRotation((rotation + 180) % 360);
+  };
+  const { config } = usePrepareContractWrite({
+    address: '0x06F448B4001D9C46C8678019EaB1F680a426dfc2',
+    abi: [
+      {
+        name: 'mint',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [{ internalType: 'uint32', name: 'tokenId', type: 'uint32' }],
+        outputs: [],
+      },
+    ],
+    functionName: 'mint',       
+    args: [parseInt(tokenId)],
+    enabled: Boolean(tokenId),
+  })
 
 
   const tabContent = [
     () => 
             <div className=' w-[90%] mx-auto h-[70vh] flex flex-col pt-[8rem] '>
-                <div className=' flex flex-col gap-20'>
+                <div className=' flex flex-col'>
                     <div className=' flex border-4 border-dashed border-black justify-between'>
                         <input
                             type="number"
@@ -24,7 +47,8 @@ const Stake = () => {
                             placeholder={'0'}
                             className=' p-2 text-black placeholder:text-black bg-[#FFF9ED] !h-[3rem] w-full text-xl'
                             value={inputValue === '' ? '' : inputValue}
-                            onChange={handleInputChange}
+                            onChange={(e) => setTokenId(e.target.value)}
+
                         />
                         <Image
                             src={'/chainlink.png'}
@@ -34,9 +58,9 @@ const Stake = () => {
                             className=' p-1'
                         />
                     </div>
-
-                    {/* arrow */}
-
+                    <button className={`${rotation !== 0 ? `rotate-${rotation}` : ''} duration-300`} onClick={handleSVGClick}>
+                      <svg className='my-8 scale-[3] mx-auto rotate-90'  xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z"/></svg>                    
+                    </button>
                     <div className=' flex border-4 border-dashed border-black justify-between'>
                         <input
                             type="number"
@@ -44,7 +68,8 @@ const Stake = () => {
                             placeholder={'0'}
                             className=' p-2 text-black placeholder:text-black bg-[#FFF9ED] !h-[3rem] w-full text-xl'
                             value={inputValue === '' ? '' : inputValue}
-                            onChange={handleInputChange}
+                            onChange={(e) => setTokenId(e.target.value)}
+
                         />
                         <Image
                             src={'/token.png'}
@@ -124,9 +149,9 @@ const Stake = () => {
         </div>
         <Image
         src={'/maskot.png'}
-        width={700}
+        width={400}
         height={200}
-        className=' absolute mt-[4rem]'
+        className=' absolute bottom-0 right-0 -z-10'
         alt=' more cute logo'
       />
       </div>

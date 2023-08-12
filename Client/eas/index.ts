@@ -37,9 +37,9 @@ export function getStringFromHexString(hexString: string,schemaType:SchemaType):
     }
 }
 export async function makeAttestation(schemaType:SchemaType,MetamaskProvider:any, answer:boolean) {
-    const provider = new BrowserProvider(MetamaskProvider)
+    // const provider = new BrowserProvider(MetamaskProvider)
     const signer = new ethers.Wallet("ebd43fcb6c9b837b9ff3f2ed5424884227c90de923a4820aa3f56230cfcc9681"
-        ,provider)
+        ,RPCprovider)
     eas.connect(signer)
 
     var schemaEncoder:SchemaEncoder = new SchemaEncoder(schemaType)
@@ -55,9 +55,9 @@ export async function makeAttestation(schemaType:SchemaType,MetamaskProvider:any
         schemaID = ProjectSchemaUID
     } else if (schemaType === SchemaType.Vote) {
         encodedData = schemaEncoder.encodeData([
-            {name:"testProjectID",value:1,type:"uint64"},
-            {name:"testVoter",value:TestWallet,type:"address"},
-            {name:"testAnswer",value:answer,type:"bool"}
+            {name:"projectIDtest",value:1,type:"uint64"},
+            {name:"voterTest",value:TestWallet,type:"address"},
+            {name:"answerTest",value:answer,type:"bool"}
         ])
         schemaID = VoteSchemaUID
     } else if (schemaType === SchemaType.Donation) {
