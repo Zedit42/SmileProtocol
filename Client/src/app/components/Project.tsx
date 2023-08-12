@@ -206,6 +206,7 @@ const Hero = () => {
          async () => {
           
             try {
+              await network()
               await approveWrite({
                 args:[
                   SOURCE_CONTRACT,parseEther(tokenId)
@@ -216,10 +217,6 @@ const Hero = () => {
                   BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
                 ]
               })
-                /* await SOURCE_DONOR.buySmileAndDonate(
-                  BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
-                ) */
-                console.log("TX GÖNDERİLDİ")
             }catch(error) {
               console.error(error)
             }

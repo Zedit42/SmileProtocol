@@ -2,9 +2,9 @@ import {Attestation, EAS, SchemaDecodedItem, SchemaEncoder} from "@ethereum-atte
 import {BrowserProvider, ethers} from "ethers";
 import {AttestationUID, DonationSchemaUID, ProjectSchemaUID, SchemaType, TestWallet, VoteSchemaUID} from "../constants"
 
-const EASContractAddress: string = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e";
+const EASContractAddress: string = "0x4200000000000000000000000000000000000021";
 const eas:EAS = new EAS(EASContractAddress);
-const RPCprovider = new ethers.JsonRpcProvider("https://gateway.tenderly.co/public/sepolia");
+const RPCprovider = new ethers.JsonRpcProvider("https://rpc.goerli.optimism.gateway.fm");
 
 eas.connect(RPCprovider);
 
@@ -55,9 +55,9 @@ export async function makeAttestation(schemaType:SchemaType,MetamaskProvider:any
         schemaID = ProjectSchemaUID
     } else if (schemaType === SchemaType.Vote) {
         encodedData = schemaEncoder.encodeData([
-            {name:"projectIDtest",value:1,type:"uint64"},
-            {name:"voterTest",value:TestWallet,type:"address"},
-            {name:"answerTest",value:answer,type:"bool"}
+            {name:"projectID",value:1,type:"uint64"},
+            {name:"voter",value:TestWallet,type:"address"},
+            {name:"answer",value:answer,type:"bool"}
         ])
         schemaID = VoteSchemaUID
     } else if (schemaType === SchemaType.Donation) {
