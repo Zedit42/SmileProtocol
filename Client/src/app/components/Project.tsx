@@ -84,24 +84,6 @@ const Hero = () => {
     chainId: 43113,
   })}
 
-    // useEffect(()=>{
-    //
-    //     if (projectID) {
-    //         const getProjectDetailsFromDB = async () => {
-    //             const prisma = new PrismaClient();
-    //             var dataDB = await prisma.projects.findUnique({
-    //                 where: {
-    //                     projectid: parseInt(projectID)
-    //                 }
-    //             })
-    //             setDBData(dataDB)
-    //         }
-    //         getProjectDetailsFromDB()
-    //     }
-    //
-    // }, [projectID])
-
-
   return (
     <div className="max-w-[75vw] mx-auto px-4 my-6 flex gap-[4rem] ">
       <div className=' '>

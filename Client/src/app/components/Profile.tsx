@@ -316,7 +316,7 @@ const Profile  = () => {
                                     Dessay
                                 </div>
                                 <div>
-                                    Lorem, ipsum dolor sit amet consectetur adipisicing Lorem Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    Dessay is an innovative platform that empowers users to create written content collectively through a decentralized approach...
                                 </div>
                             </div>
                             <div className=' flex flex-col -mt-2 -mr-2'>

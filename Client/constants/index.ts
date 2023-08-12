@@ -1,9 +1,9 @@
 import {gql} from "@apollo/client";
 
 export const IMAGE_SERVER: string = "http://167.71.41.1/images/"
-export const GRAPHQL_ENDPOINT: string = "https://sepolia.easscan.org/graphql"
+export const GRAPHQL_ENDPOINT: string = "https://optimism-goerli-bedrock.easscan.org/graphql"
 export const TestWallet: string = "0x3a7f02D4838181Dd17f0d42194A256f8BEC19A98"
-export const EASSCAN_URL: string = "https://sepolia.easscan.org/attestation/view/"
+export const EASSCAN_URL: string = "https://optimism-goerli-bedrock.easscan.org/attestation/view/"
 // GraphQL Query
 export const GET_ATTESTATION_QUERY = gql`
     query Attestations($where: AttestationWhereInput) {
