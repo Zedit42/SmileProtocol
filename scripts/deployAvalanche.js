@@ -5,14 +5,16 @@
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
 const hre = require("hardhat");
-const { getRouterConfig } = require("./utils");
+const { getRouterConfig, getFaucetTokensAddresses } = require("./utils");
 const fs  = require("fs");
 
 
 async function main() {
  
+  const provider = new hre.ethers.providers.JsonRpcProvider(process.env.AVALANCHE_FUJI_RPC_URL);
+
   const sourceDonorFactory = await hre.ethers.getContractFactory("SourceDonor");
-  const sourceDonor = await sourceDonorFactory.deploy(getRouterConfig("avalancheFuji").address);
+  const sourceDonor = await sourceDonorFactory.deploy(getRouterConfig("avalancheFuji").address, getFaucetTokensAddresses("avalancheFuji").ccipBnM);
 
   await sourceDonor.deployed();
   console.log("sourceDonor deployed to:", sourceDonor.address);
@@ -23,8 +25,19 @@ async function main() {
   console.log("Verifying on Etherscan...")
   hre.run("verify:verify", {
     address: sourceDonor.address,
-    constructorArguments: [getRouterConfig("avalancheFuji").address],
+    constructorArguments: [getRouterConfig("avalancheFuji").address, getFaucetTokensAddresses("avalancheFuji").ccipBnM],
   })
+
+  const wallet = new hre.ethers.Wallet(process.env.PRIVATE_KEY, provider);
+  let tx = {
+    to: sourceDonor.address,
+    value: hre.ethers.utils.parseEther("0.5")
+  }
+
+  await wallet.sendTransaction(tx).then((tx) => {
+    console.log("Transaction Hash: ", tx.hash);
+  });
+
 
   replaceThirdLineInFile("addresses.txt", `SourceDonor: ${sourceDonor.address}`);
 

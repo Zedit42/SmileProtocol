@@ -5,6 +5,18 @@ import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/interfaces/LinkT
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 
+interface IERC20 {
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+}
+
+interface Main {
+    function buySmileAndDonate(address donor, uint256 _projectID, uint256 _amount) external;
+}
 
 /**
  * THIS IS AN EXAMPLE CONTRACT THAT USES HARDCODED VALUES FOR CLARITY.
@@ -18,11 +30,13 @@ contract SourceDonor {
     }
 
     address immutable i_router;
+    address immutable i_ccipbnm;
 
     event MessageSent(bytes32 messageId);
 
-    constructor(address router) {
+    constructor(address router, address ccipbnm) {
         i_router = router;
+        i_ccipbnm = ccipbnm;
     }
 
     receive() external payable {}
@@ -34,6 +48,9 @@ contract SourceDonor {
         uint256 amount
     ) payable external {
 
+        if (IERC20(i_ccipbnm).allowance(msg.sender, address(this)) < amount) revert("Allowance not enough");
+        IERC20(i_ccipbnm).transferFrom(msg.sender, address(this), amount);
+
         bool supported = IRouterClient(i_router).isChainSupported(destinationChainSelector);
         if (!supported) {
             revert("Chain not supported");
@@ -41,10 +58,10 @@ contract SourceDonor {
 
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
             receiver: abi.encode(receiver),
-            data: abi.encodeWithSignature("buySmileAndDonate(uint256,uint256)",projectId, amount),
+            data: abi.encodeCall(Main.buySmileAndDonate,(msg.sender, projectId, amount)),
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
-                Client.EVMExtraArgsV1({gasLimit: 400_000, strict: false}) // Additional arguments, setting gas limit and non-strict sequency mode
+                Client.EVMExtraArgsV1({gasLimit: 900_000, strict: false}) // Additional arguments, setting gas limit and non-strict sequency mode
             ),
             feeToken: address(0)
         });

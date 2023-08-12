@@ -23,6 +23,7 @@ async function main() {
   console.log("Main deployed to:", Main.address);
   console.log("DestinationDonor deployed to:", DestinationDonor.address);
 
+ 
   console.log("Verifying contracts on Etherscan...")
   
   hre.run("verify:verify", {
@@ -35,18 +36,21 @@ async function main() {
     constructorArguments: [getRouterConfig("optimismGoerli").address, Main.address, optimismCCIP, smileTokenAddress],
   })
 
+  // Get provider from url
+  const provider = new hre.ethers.providers.JsonRpcProvider(process.env.POLYGON_MUMBAI_RPC_URL);
+
+  // Get New Wallet from Private key
+  const wallet = new hre.ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+   const main = Main.connect(wallet);
+   await main.deployNewProject("Testpinar",10000,100,500,"NFT",hre.ethers.utils.formatBytes32String("test"));
+   console.log("Deployed new project!")
+   await main.setDestinationDonor(DestinationDonor.address);
+   console.log("Set DestinationDonor!")
+
   fs.writeFileSync("addresses.txt", `Main: ${Main.address}\nDestinationDonor: ${DestinationDonor.address}`)
 
-   // Get provider from url
-   const provider = new hre.ethers.providers.JsonRpcProvider(process.env.POLYGON_MUMBAI_RPC_URL);
-
-   // Get New Wallet from Private key
-   const wallet = new hre.ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-    const main = Main.connect(wallet);
-    await main.deployNewProject("Testpinar",10000,100,500,"NFT",hre.ethers.utils.formatBytes32String("test"));
-    console.log("Deployed new project!")
-  
+   
     
     
 }

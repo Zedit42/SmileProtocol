@@ -23,6 +23,7 @@ contract Main {
 
     ERC20Token immutable SMILE;
     ERC20Token immutable CCIPBnM;
+    address destinationDonor;
     Project[] private projects;
     /* mapping(uint256 => WithdrawalRequest[]) private requests; */
     mapping(uint256 => mapping(uint256 => mapping(address => bool[2]))) private voteStatus;
@@ -275,18 +276,18 @@ contract Main {
         SMILE.mint(msg.sender, _amount);
     }
 
-    function buySmileAndDonate(uint256 _projectID, uint256 _amount) external {
-        
+    function buySmileAndDonate(address donor, uint256 _projectID, uint256 _amount) external {
+        if (msg.sender != destinationDonor) revert Unauthorized(); 
         Project storage project = projects[_projectID];
         project.totalDonationAmount += _amount;
         project.currentBalance += _amount;
 
-        addressToDonationAmount[msg.sender][_projectID] += _amount;
+        addressToDonationAmount[donor][_projectID] += _amount;
         
         if(_amount >= project.projectNFT.threshold && project.projectNFT.holders < project.projectNFT.maxSupply) {
             uint256 votePower = _amount / project.projectNFT.threshold;
-            if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) project.projectNFT.holders++;
-            SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
+            if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(donor) == 0) project.projectNFT.holders++;
+            SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(donor, votePower);
             project.projectNFT.voterCount += votePower;
         }
 
@@ -305,6 +306,10 @@ contract Main {
 
     function getSmileAddress() external view returns(address) {
         return address(SMILE);
+    }
+
+    function setDestinationDonor(address _destinationDonor) external {
+        destinationDonor = _destinationDonor;
     }
 
     /* function getArchivedDonation(uint256 _projectID) external {
