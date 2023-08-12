@@ -6,6 +6,7 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 const { getRouterConfig, getFaucetTokensAddresses} = require("./utils");
+const { fs } = require("fs");
 
 async function main() {
   const MainFactory = await hre.ethers.getContractFactory("Main");
@@ -21,7 +22,33 @@ async function main() {
 
   console.log("Main deployed to:", Main.address);
   console.log("DestinationDonor deployed to:", DestinationDonor.address);
+
+  console.log("Verifying contracts on Etherscan...")
   
+  hre.run("verify:verify", {
+    address: Main.address,
+    constructorArguments: [optimismCCIP],
+  })
+  
+  hre.run("verify:verify", {
+    address: DestinationDonor.address,
+    constructorArguments: [getRouterConfig("optimismGoerli").address, Main.address, optimismCCIP, smileTokenAddress],
+  })
+
+  fs.writeFileSync("addresses.txt", `Main: ${Main.address}\nDestinationDonor: ${DestinationDonor.address}`)
+
+   // Get provider from url
+   const provider = new hre.ethers.providers.JsonRpcProvider(process.env.POLYGON_MUMBAI_RPC_URL);
+
+   // Get New Wallet from Private key
+   const wallet = new hre.ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+    const main = Main.connect(wallet);
+    await main.deployNewProject("Testpinar",10000,100,500,"NFT",hre.ethers.utils.formatBytes32String("test"));
+    console.log("Deployed new project!")
+  
+    
+    
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -9,8 +9,8 @@ module.exports = {
     runs: 200,
   },
   networks: {
-    polygonMumbai: {
-      url: process.env.POLYGON_MUMBAI_RPC_URL,
+    avalancheFujiTestnet: {
+      url: process.env.AVALANCHE_FUJI_RPC_URL,
       accounts: [process.env.PRIVATE_KEY],
     },
     optimismGoerli: {
@@ -18,5 +18,12 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY],
     }
 
+  },
+  etherscan: {
+    apiKey: {
+      optimisticGoerli: process.env.OPTIMISTIC_API_KEY,
+      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY
+    }
+    
   }
 };

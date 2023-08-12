@@ -276,16 +276,7 @@ contract Main {
     }
 
     function buySmileAndDonate(uint256 _projectID, uint256 _amount) external {
-        if(CCIPBnM.balanceOf(msg.sender) <= 0) revert Insufficent();
-        if(CCIPBnM.allowance(msg.sender, address(this)) <= 0) revert NoAllowance();
-        if(_amount > SMILE.balanceOf(msg.sender)) revert Insufficent();
-        if(_amount > SMILE.allowance(msg.sender, address(this))) revert NoAllowance();
-
-
-        CCIPBnM.transferFrom(msg.sender, address(this), _amount);
-        SMILE.mint(msg.sender, _amount);
-
-        SMILE.transferFrom(msg.sender, address(this), _amount);
+        
         Project storage project = projects[_projectID];
         project.totalDonationAmount += _amount;
         project.currentBalance += _amount;
@@ -298,6 +289,8 @@ contract Main {
             SmileProtocol_ProjectNFT(project.projectNFT.nftAddress).safeMint(msg.sender, votePower);
             project.projectNFT.voterCount += votePower;
         }
+
+        emit newDonation(msg.sender, _projectID, _amount);
 
     }
 
