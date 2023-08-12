@@ -1,25 +1,51 @@
 "use client"
 import Image from 'next/image';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { parseEther } from 'viem'
-import { useContractWrite, useAccount } from 'wagmi'
+import { useContractWrite, useAccount,useNetwork} from 'wagmi'
 import { MAIN_CONTRACT} from '../../../config'
-
+import toast, { Toaster } from 'react-hot-toast';
+import { switchNetwork} from '@wagmi/core'
 const Stake = () => {
+    const {chain,chains} = useNetwork()
   const [tokenId, setTokenId] = useState('')
   const account = useAccount()
   const [activeTab, setActiveTab] = useState(1);
   const [inputValue, setInputValue] = useState<number | ''>(0);
-
+  const [correctChain,setCorrectChain] = useState(false)
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value !== '' ? parseFloat(event.target.value) : '';
     setInputValue(newValue);
   };
+    const network = async () => {
+        try{
+            await switchNetwork({
+                chainId: 420,
+            })
+            toast.success(`You are successfully changed network to Optimism Goerli`)
+        }catch(error) {
+            toast.error("User denied wallet change action")
+        }
+    }
+
+
   const [rotation, setRotation] = useState(0);
   const mainAddress:string = "0x60B3D95D00e98d14ec080D51752Ba137186CFaAd"
   const handleSVGClick = () => {
     setRotation((rotation + 180) % 360);
   };
+
+    useEffect(() => {
+       if(chain.id === 420) {
+           setCorrectChain(true)
+       }else {
+            setCorrectChain(false)
+       }
+
+
+    }, [chain]);
+
+
   const {data,write,isLoading,isSuccess} = useContractWrite({
     // CCIP-BnM address for approving
     address: '0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16',
@@ -78,7 +104,8 @@ const Stake = () => {
 
 
   const tabContent = [
-    () => 
+    () =>
+
             <div className=' w-[90%] mx-auto h-[70vh] flex flex-col pt-[8rem] '>
                 <div className=' flex flex-col'>
                     <div className=' flex border-4 border-dashed border-black justify-between'>
@@ -91,6 +118,7 @@ const Stake = () => {
                             onChange={(e) => setTokenId(e.target.value)}
 
                         />
+
                         <Image
                             src={'/chainlink.png'}
                             width={44}
@@ -98,6 +126,7 @@ const Stake = () => {
                             alt='ccip token'
                             className=' p-1'
                         />
+
                     </div>
                     <button className={`${rotation !== 0 ? `rotate-${rotation}` : ''} duration-300`} onClick={handleSVGClick}>
                       <svg className='my-8 scale-[3] mx-auto rotate-90'  xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z"/></svg>                    
@@ -122,10 +151,16 @@ const Stake = () => {
                 </div>
                 <div className=' mt-[4rem] flex justify-between'>
                     <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
-                    onClick={()=>write({
-                      args:[mainAddress,parseEther(tokenId)]
-                    })}
-                    >Approve</button>
+                    onClick={async()=> {
+                        if(!correctChain) {
+                            await network()
+                        }
+                        else {
+                            write({
+                                args: [mainAddress, parseEther(tokenId)]
+                            }) }
+                    }}
+                    >{correctChain ? 'Approve': 'Wrong Network'}</button>
                     <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
                     onClick={
                       ()=>writeForStake({
@@ -133,13 +168,9 @@ const Stake = () => {
                       })
                       
                     }
-                    disabled={isLoading}
+                    disabled={!correctChain}
                     >
-                    {isLoading
-                    ? 'Staking...'
-                    : isSuccess
-                    ? 'Staked'
-                    : 'Stake'}
+                        {correctChain ? 'Stake': 'Wrong Network'}
                     </button>
                 </div>
 
@@ -213,9 +244,10 @@ const Stake = () => {
         alt=' more cute logo'
       />
       </div>
-            
 
+        <Toaster/>
     </div>
+
   );
 };
 

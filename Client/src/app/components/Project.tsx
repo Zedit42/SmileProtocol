@@ -1,16 +1,21 @@
 "use client"
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from './Button';
 import { MdVerified } from 'react-icons/md'
 import Image from 'next/image';
 import {ethers} from "ethers"
 import Campaing from './Campaing';
 import { switchNetwork } from '@wagmi/core'
+import { useNetwork} from 'wagmi'
 import {useContractWrite,useAccount} from 'wagmi'
 import { SOURCE_CONTRACT,DESTINATION_CHAIN,DESTINATION_CONTRACT,SOURCE_DONOR } from '../../../config';
 import {parseEther} from "viem"
+import toast, {Toaster} from "react-hot-toast";
+
 const Hero = () => {
+  const {chain,chains} = useNetwork()
   const [tokenId, setTokenId] = useState('')
+  const [correctChain,setCorrectChain] = useState(false)
   const {data,write,isLoading,isSuccess} = useContractWrite({
     address: SOURCE_CONTRACT,
     abi:[
@@ -76,14 +81,27 @@ const Hero = () => {
     functionName:"approve"
   })
 
+  useEffect(() => {
+    if(chain.id === 43113) {
+      setCorrectChain(true)
+    }else {
+      setCorrectChain(false)
+    }
 
 
-
-  const network = async() => {
-    await switchNetwork({
-    chainId: 43113,
-  })}
-
+  }, [chain]);
+  const network = async () => {
+    try{
+      await switchNetwork({
+        chainId: 43113,
+      })
+      toast.success(`You are successfully changed network to Avalanche Fuji`)
+      setCorrectChain(true)
+    }catch(error) {
+      toast.error("User denied wallet change action")
+      setCorrectChain(false)
+    }
+  }
   return (
     <div className="max-w-[75vw] mx-auto px-4 my-6 flex gap-[4rem] ">
       <div className=' '>
@@ -176,34 +194,45 @@ const Hero = () => {
                 <p className='font-bold'>supporters</p>
             </div>
         </div>
-        <input
-          type="number"
-          id="number"
-          placeholder={'0'}
-          className=' p-2 text-black placeholder:text-black border-4 border-black bg-[#FFF9ED] !h-[3rem] w-5/6 text-xl'
-          value={tokenId === '' ? '' : tokenId}
-          onChange={(e) => setTokenId(e.target.value)}
-        />
-        <button className=' hover:animate-jelly w-5/6 h-16 border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-5xl font-bold py-1 custom-pointer' onClick={
+
+        {correctChain ?
+            <input
+            type="number"
+            id="number"
+            placeholder={'0'}
+            className=' p-2 text-black placeholder:text-black border-4 border-black bg-[#FFF9ED] !h-[3rem] w-5/6 text-xl'
+            value={tokenId === '' ? '' : tokenId}
+            onChange={(e) => setTokenId(e.target.value)}
+        />:''}
+        <button className={` hover:animate-jelly w-5/6 h-16 border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-${correctChain ? '5xl':'3xl'} font-bold py-1 custom-pointer`} onClick={
          async () => {
           
             try {
+              if(!correctChain) {
               await network()
-              await approveWrite({
-                args:[
-                  SOURCE_CONTRACT,parseEther(tokenId)
-                ]
-              })
-              await write({
-                args:[
-                  BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
-                ]
-              })
+              }
+              else {
+                if(tokenId != 0) {
+                  await approveWrite({
+                    args:[
+                      SOURCE_CONTRACT,parseEther(tokenId)
+                    ]
+                  })
+                  await write({
+                    args:[
+                      BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+                    ]
+                  })
+                }else {
+                  toast.error("You can't donate 0 SMILE")
+                }
+              }
             }catch(error) {
               console.error(error)
             }
-          }}>Support</button>
+          }}>{correctChain ? 'Support': 'Wrong Network' }</button>
       </div>
+      <Toaster/>
     </div>
   );
 };
