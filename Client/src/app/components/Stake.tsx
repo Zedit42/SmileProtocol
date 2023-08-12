@@ -1,12 +1,13 @@
 "use client"
 import Image from 'next/image';
 import { useState } from 'react';
-import { usePrepareContractWrite } from 'wagmi'
-
+import { parseEther } from 'viem'
+import { useContractWrite, useAccount } from 'wagmi'
+import { MAIN_CONTRACT} from '../../../config'
 
 const Stake = () => {
   const [tokenId, setTokenId] = useState('')
-
+  const account = useAccount()
   const [activeTab, setActiveTab] = useState(1);
   const [inputValue, setInputValue] = useState<number | ''>(0);
 
@@ -15,25 +16,65 @@ const Stake = () => {
     setInputValue(newValue);
   };
   const [rotation, setRotation] = useState(0);
-
+  const mainAddress:string = "0x60B3D95D00e98d14ec080D51752Ba137186CFaAd"
   const handleSVGClick = () => {
     setRotation((rotation + 180) % 360);
   };
-  const { config } = usePrepareContractWrite({
-    address: '0x06F448B4001D9C46C8678019EaB1F680a426dfc2',
+  const {data,write,isLoading,isSuccess} = useContractWrite({
+    // CCIP-BnM address for approving
+    address: '0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16',
     abi: [
       {
-        name: 'mint',
-        type: 'function',
-        stateMutability: 'nonpayable',
-        inputs: [{ internalType: 'uint32', name: 'tokenId', type: 'uint32' }],
-        outputs: [],
-      },
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "approve",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
     ],
-    functionName: 'mint',       
-    args: [parseInt(tokenId)],
-    enabled: Boolean(tokenId),
+    functionName: 'approve',       
   })
+
+  const {data:dataForStake,write:writeForStake,isSuccess:SuccessForStake,isLoading:LoadingForStake} =
+  useContractWrite({
+    //buySMILE address
+    address:{MAIN_CONTRACT},
+    abi:[
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "_amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "buySMILE",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    functionName:"buySMILE",
+  })
+
+
 
 
   const tabContent = [
@@ -46,7 +87,7 @@ const Stake = () => {
                             id="number"
                             placeholder={'0'}
                             className=' p-2 text-black placeholder:text-black bg-[#FFF9ED] !h-[3rem] w-full text-xl'
-                            value={inputValue === '' ? '' : inputValue}
+                            value={tokenId}
                             onChange={(e) => setTokenId(e.target.value)}
 
                         />
@@ -67,9 +108,8 @@ const Stake = () => {
                             id="number"
                             placeholder={'0'}
                             className=' p-2 text-black placeholder:text-black bg-[#FFF9ED] !h-[3rem] w-full text-xl'
-                            value={inputValue === '' ? '' : inputValue}
+                            value={tokenId === '' ? '' : tokenId}
                             onChange={(e) => setTokenId(e.target.value)}
-
                         />
                         <Image
                             src={'/token.png'}
@@ -81,8 +121,26 @@ const Stake = () => {
                     </div>
                 </div>
                 <div className=' mt-[4rem] flex justify-between'>
-                    <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'>Approve</button>
-                    <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'>Stake</button>
+                    <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
+                    onClick={()=>write({
+                      args:[mainAddress,parseEther(tokenId)]
+                    })}
+                    >Approve</button>
+                    <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
+                    onClick={
+                      ()=>writeForStake({
+                        args:[parseEther(tokenId)]
+                      })
+                      
+                    }
+                    disabled={isLoading}
+                    >
+                    {isLoading
+                    ? 'Staking...'
+                    : isSuccess
+                    ? 'Staked'
+                    : 'Stake'}
+                    </button>
                 </div>
 
             </div>,
@@ -155,7 +213,7 @@ const Stake = () => {
         alt=' more cute logo'
       />
       </div>
-
+            
 
     </div>
   );

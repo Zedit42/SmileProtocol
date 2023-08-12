@@ -1,13 +1,88 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Button from './Button';
 import { MdVerified } from 'react-icons/md'
 import Image from 'next/image';
+import {ethers} from "ethers"
 import Campaing from './Campaing';
-
-
+import { switchNetwork } from '@wagmi/core'
+import {useContractWrite,useAccount} from 'wagmi'
+import { SOURCE_CONTRACT,DESTINATION_CHAIN,DESTINATION_CONTRACT,SOURCE_DONOR } from '../../../config';
+import {parseEther} from "viem"
 const Hero = () => {
+  const [tokenId, setTokenId] = useState('')
+  const {data,write,isLoading,isSuccess} = useContractWrite({
+    address: SOURCE_CONTRACT,
+    abi:[
+      {
+        "inputs": [
+          {
+            "internalType": "uint64",
+            "name": "destinationChainSelector",
+            "type": "uint64"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "buySmileAndDonate",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+      }
+    ],
+    functionName: 'buySmileAndDonate'
+  })
+  const {write:approveWrite,isLoading:approveLoading,isSuccess:approveSuccess} = useContractWrite({
+    address: "0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4",
+    abi:[
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "approve",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    functionName:"approve"
+  })
 
+
+
+
+  const network = async() => {
+    await switchNetwork({
+    chainId: 43113,
+  })}
 
     // useEffect(()=>{
     //
@@ -119,7 +194,36 @@ const Hero = () => {
                 <p className='font-bold'>supporters</p>
             </div>
         </div>
-        <button className=' hover:animate-jelly w-5/6 h-16 mt-[3rem] border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-5xl font-bold py-1 custom-pointer'>Support</button>
+        <input
+          type="number"
+          id="number"
+          placeholder={'0'}
+          className=' p-2 text-black placeholder:text-black border-4 border-black bg-[#FFF9ED] !h-[3rem] w-5/6 text-xl'
+          value={tokenId === '' ? '' : tokenId}
+          onChange={(e) => setTokenId(e.target.value)}
+        />
+        <button className=' hover:animate-jelly w-5/6 h-16 border-4 border-black bg-black text-[#FFF9ED] duration-200 ease-linear hover:bg-[#FFF9ED] hover:text-black text-5xl font-bold py-1 custom-pointer' onClick={
+         async () => {
+          
+            try {
+              await approveWrite({
+                args:[
+                  SOURCE_CONTRACT,parseEther(tokenId)
+                ]
+              })
+              await write({
+                args:[
+                  BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+                ]
+              })
+                /* await SOURCE_DONOR.buySmileAndDonate(
+                  BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+                ) */
+                console.log("TX GÖNDERİLDİ")
+            }catch(error) {
+              console.error(error)
+            }
+          }}>Support</button>
       </div>
     </div>
   );

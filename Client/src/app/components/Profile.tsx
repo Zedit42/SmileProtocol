@@ -8,6 +8,10 @@ import {makeAttestation,getStringFromHexString} from "../../../eas";
 import {ApolloQueryResult} from "@apollo/client";
 import {SchemaDecodedItem} from "@ethereum-attestation-service/eas-sdk";
 import toast, { Toaster } from 'react-hot-toast';
+import { useContractWrite, useAccount } from 'wagmi'
+import { MAIN_CONTRACT} from '../../../config'
+import {encodeBytes32String} from "ethers"
+import {stringToHex} from "viem"
 /* interface ProfileProps {
     encodedData:{
         data:string,
@@ -34,12 +38,20 @@ const Profile  = () => {
         try {
             setGrayed(true)
             const toastId = toast.loading("Your vote saving to EAS")
-            await Promise.all([makeAttestation(SchemaType.Vote, window.ethereum,answer)])
+            const EASUID = await makeAttestation(SchemaType.Vote, window.ethereum,answer)
             toast.success("Your vote saved at EAS successfully!",{
                 id:toastId
             })
+            await write({
+                args:[
+                    0,0,true,EASUID.slice(2,34)
+                ]
+            })
+            /* if(isSuccess) {
             window.location.reload()
+            } */
         }catch(error) {
+            
             toast.error("Error")
             throw error
         }
@@ -73,6 +85,40 @@ const Profile  = () => {
         };
     }, [attestationData]);
 
+    const {data,write,isLoading,isSuccess} = useContractWrite({
+        address: MAIN_CONTRACT,
+        abi:[
+            {
+                "inputs": [
+                  {
+                    "internalType": "uint256",
+                    "name": "_projectID",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "_reqID",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "_vote",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bytes32",
+                    "name": "_EAS_UID",
+                    "type": "bytes32"
+                  }
+                ],
+                "name": "vote",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+              }
+        ],
+        functionName:"vote"
+    })
 
 
     const renderData = (data, attestationData) => {
@@ -361,7 +407,14 @@ const Profile  = () => {
                     </div>
                   
                     {
-                        ready ? renderData(cleanData,attestationData): "Hello"
+                        ready ? renderData(cleanData,attestationData) :         
+                        <Image
+                        src={'/maskot.png'}
+                        width={300}
+                        height={200}
+                        className='  opacity-50 animate-jellyinfinite'
+                        alt=' more cute logo'
+                    />
                         
                         
                     }

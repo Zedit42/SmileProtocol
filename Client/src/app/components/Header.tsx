@@ -1,12 +1,24 @@
 import Link from 'next/link';
 import React from 'react';
 import { CustomConnectButton } from './ConnectButton';
+// import { fetchBalance } from '@wagmi/core'
+
+
 
 const Header = () => {
+  // const balance =  fetchBalance({
+  //   address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+  //   token: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+  // })
+
+
+
+  
   return (
     <div className="bg-transparent px-10 mb-[5rem] pt-5">
         <div className="flex justify-between items-center">
           <Link href={'/'}>
+            {/* {balance} */}
             <img src={'/smile.png'} alt="smile" className=' w-[14rem] max-md:rotate-[-90deg] max-md:scale-[1.75]' />
           </Link>
           {/* <Link href={'/profile/1'}>
