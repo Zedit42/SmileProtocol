@@ -6,7 +6,7 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 const { getRouterConfig, getFaucetTokensAddresses} = require("./utils");
-const { fs } = require("fs");
+const fs = require("fs");
 
 async function main() {
   const MainFactory = await hre.ethers.getContractFactory("Main");
@@ -37,7 +37,7 @@ async function main() {
   })
 
   // Get provider from url
-  const provider = new hre.ethers.providers.JsonRpcProvider(process.env.POLYGON_MUMBAI_RPC_URL);
+  const provider = new hre.ethers.providers.JsonRpcProvider(process.env.OPTIMISM_GOERLI_RPC_URL);
 
   // Get New Wallet from Private key
   const wallet = new hre.ethers.Wallet(process.env.PRIVATE_KEY, provider);

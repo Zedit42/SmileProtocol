@@ -14,7 +14,7 @@ interface IERC20 {
     function allowance(address owner, address spender) external view returns (uint256);
 }
 
-interface Main {
+interface IMain {
     function buySmileAndDonate(address donor, uint256 _projectID, uint256 _amount) external;
 }
 
@@ -58,7 +58,7 @@ contract SourceDonor {
 
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
             receiver: abi.encode(receiver),
-            data: abi.encodeCall(Main.buySmileAndDonate,(msg.sender, projectId, amount)),
+            data: abi.encodeCall(IMain.buySmileAndDonate,(msg.sender, projectId, amount)),
             tokenAmounts: new Client.EVMTokenAmount[](0),
             extraArgs: Client._argsToBytes(
                 Client.EVMExtraArgsV1({gasLimit: 900_000, strict: false}) // Additional arguments, setting gas limit and non-strict sequency mode

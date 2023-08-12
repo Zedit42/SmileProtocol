@@ -8,9 +8,7 @@ import "./ERC20.sol";
 
 contract Main {
 
-    event newWithdrawalRequest(uint256 indexed _projectID, uint256 _reqID, string _projectName, uint256 _amount, string _description, uint256 endTimestamp);
-    event newDonation(address indexed _donor, uint256 indexed _projectID, uint256 _amount);
-    event newVote(address indexed _voter, uint256 indexed _projectID, uint256 _reqID, bool _vote, uint256 _power);
+    // The functions that in the comments are the ones that we dont use in the demo but they're working fine
 
     error InvalidAmount();
     error NotActive();
@@ -18,14 +16,13 @@ contract Main {
     error NoAllowance();
     error Unauthorized();
     error AlreadyActive();
-    error NoConsensus();
-    error AlreadyVoted();
+    
 
     ERC20Token immutable SMILE;
     ERC20Token immutable CCIPBnM;
     address destinationDonor;
     Project[] private projects;
-    /* mapping(uint256 => WithdrawalRequest[]) private requests; */
+    mapping(uint256 => WithdrawalRequest[]) private requests; 
     mapping(uint256 => mapping(uint256 => mapping(address => bool[2]))) private voteStatus;
     mapping(address => mapping(uint256 => uint256)) private addressToDonationAmount;
     uint256 constant minSecondsToVote = 1209600;
@@ -51,7 +48,7 @@ contract Main {
         bool isActive;
     }
 
-    /* struct WithdrawalRequest{
+    struct WithdrawalRequest{
         bytes32 EAS_UID;
         uint256 requestID;
         uint256 amount;
@@ -59,7 +56,7 @@ contract Main {
         uint256 declines;
         uint256 endTimestamp;
         bool isActive;
-    } */
+    } 
 
     struct ProjectNFT {
         address nftAddress;
@@ -151,26 +148,21 @@ contract Main {
         }
     }
 
-    /* function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, string memory _description, bytes32 _EAS_UID) external {
+     function createWithdrawalRequest(uint256 _projectID, uint256 _amount, uint256 _endTimestamp, bytes32 _EAS_UID) external {
+        /* 
         if(msg.sender != projects[_projectID].projectOwner) revert Unauthorized();
         if(projects[_projectID].isActive) revert NotActive();
         if(_amount <= 0) revert InvalidAmount();
-        if(block.timestamp < checkLastWithdrawalRequest(_projectID).endTimestamp) revert AlreadyActive();
         if(_amount > projects[_projectID].currentBalance) revert Insufficent();
         if(_endTimestamp < (block.timestamp + minSecondsToVote)) revert InvalidAmount();
-
-        if(checkLastWithdrawalRequest(_projectID).declines > checkLastWithdrawalRequest(_projectID).approvals){
-            projects[_projectID].failedWithdrawalRequestCount++;
-        } else if (projects[_projectID].failedWithdrawalRequestCount > 0) {
-            projects[_projectID].failedWithdrawalRequestCount = 0;
-        }
+        */
 
         if(projects[_projectID].failedWithdrawalRequestCount == maxFailedWithdrawalRequests) {
             projects[_projectID].isActive = false;
             return;
         } else {
-
-             EAS Attestation newWithdrawalRequest
+            /* 
+            EAS Attestation newWithdrawalRequest
             
             bytes32 projectEAS_UID projects[_projectID].EAS_UID (reference)
             uint256 projectID _projectID
@@ -178,7 +170,7 @@ contract Main {
             uint256 amount _amount
             uint256 endTimestamp
             string description _description
-            
+            */
 
             requests[_projectID].push(WithdrawalRequest({
                 EAS_UID: _EAS_UID,
@@ -190,19 +182,12 @@ contract Main {
                 isActive: true
             }));
 
-            emit newWithdrawalRequest(
-                _projectID,
-                projects[_projectID].withdrawalRequestCount,
-                projects[_projectID].projectName,
-                _amount,
-                _description,
-                _endTimestamp
-            );
+            
 
-            checkLastWithdrawalRequest(_projectID).isActive = false;
+            
             projects[_projectID].withdrawalRequestCount++;
         }
-    } */
+    } 
 
     /* function checkLastWithdrawalRequest(uint256 _projectID) public view returns(WithdrawalRequest memory) {
         return requests[_projectID][(projects[_projectID].withdrawalRequestCount)];
@@ -234,15 +219,19 @@ contract Main {
        
     } */
 
-    function getVotePower(uint256 _projectID, address _user) internal view returns(uint256) {
+    /* function getVotePower(uint256 _projectID, address _user) internal view returns(uint256) {
         return SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).getUserPower(_user);
+    } */
+
+    function getWithdrawalRequests(uint256 _projectID) external view returns(WithdrawalRequest[] memory) {
+        return requests[_projectID];
     }
 
     function vote(uint256 _projectID, uint256 _reqID, bool _vote) external {
-        if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) revert Unauthorized();
+        /* if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) revert Unauthorized(); */
         /* if(!checkLastWithdrawalRequest(_projectID).isActive) revert NotActive(); */
         /* if(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp) revert NotActive(); */
-        if(voteStatus[_projectID][_reqID][msg.sender][0]) revert AlreadyVoted();
+        
 
         voteStatus[_projectID][_reqID][msg.sender][0] = true;
 
@@ -264,7 +253,6 @@ contract Main {
 
         
 
-        emit newVote(msg.sender, _projectID, _reqID, _vote, getVotePower(_projectID, msg.sender));
     }
 
     function buySMILE(uint256 _amount) external {
@@ -291,7 +279,6 @@ contract Main {
             project.projectNFT.voterCount += votePower;
         }
 
-        emit newDonation(msg.sender, _projectID, _amount);
 
     }
 
