@@ -1,0 +1,22 @@
+{
+  "name": "smileprotocol",
+  "version": "1.0.0",
+  "description": "<br> <div align=\"center\">   <a href=\"https://blockchaindeu.com\">     <img src=\"https://raw.githubusercontent.com/blockchainDEU/.github-private/main/profile/logo.png\" alt=\"Logo\" width=\"192\" height=\"96\">   </a>   <br><br>   <p align=\"center\">     <a href=\"https://twitter.com/blockchainDEU\">Twitter</a>     · <a href=\"https://blockchaindeu.medium.com/\">Medium</a>     ·     <a href=\"https://www.instagram.com/blockchaindeu/\">Instagram</a>   </p> </div>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@chainlink/contracts": "^0.6.1",
+    "@chainlink/contracts-ccip": "^0.7.6",
+    "@openzeppelin/contracts": "^4.8.1",
+    "dotenv": "^16.3.1",
+    "fs": "^0.0.1-security",
+    "hardhat": "^2.12.7"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1"
+  }
+}
