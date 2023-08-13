@@ -9,12 +9,12 @@ const loading = () => {
       className=' w-full h-full fixed -z-10'
       alt='bg image'
     />
-    <div className='custom-default w-screen h-screen flex justify-center my-auto'>
+    <div className='custom-default w-screen h-screen flex justify-center'>
         <img
             src={'/maskot.png'}
             width={700}
             height={200}
-            className=' pt-[20rem] opacity-50 animate-jellyinfinite'
+            className='opacity-50 w-[50vw] max-h-[70vh] my-auto  animate-jellyinfinite'
             alt=' more cute logo'
         />
     </div>

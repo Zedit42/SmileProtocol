@@ -59,7 +59,7 @@ export const CustomConnectButton = () => {
                   }
                   return (
                     <div className=' flex flex-row gap-3 flex-wrap'>
-                      <Link href={'/stake'} className=" hover:animate-jelly border-4 border-black flex px-[2rem] py-[0.4rem] text-xl my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75">Stake <Image src='/token.png' width={34} height={24} alt='coin logo' className=' ml-4 '/> </Link>
+                      <Link href={'/stake'} className=" hover:animate-jelly border-4 border-black flex px-[2rem] py-[0.4rem] text-xl my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75">Stake <img src='/token.png' width={34} height={24} alt='coin logo' className=' ml-4 '/> </Link>
                       <Link href={'/profile/1'} className=" hover:animate-jelly border-4 border-black flex p-[0.74rem] my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75"> <CgProfile className=' scale-[1.75]'/> </Link>
                       <div className=" hover:animate-jelly border-4 border-black flex px-[2rem] py-[0.5rem] my-auto bg-[#FFF9ED] cursor-pointer transition-all delay-75">
                         <div style={{ display: 'flex', gap: 12 }}>

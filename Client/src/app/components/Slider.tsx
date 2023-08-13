@@ -54,14 +54,14 @@ export default function Slider(): JSX.Element {
                 <div className=' text-5xl text-center'>{slide.title}</div>
                 <div className=' text-3xl text-center'>By {slide.creator}</div>
                 <div className=' justify-center flex mt-8'>
-                        <Image
+                        <img
                             src={'/smile_frame.png'}
                             width={200}
                             height={200}
                             alt='frame'
                             className=' mx-4 absolute '
                         />
-                        <Image
+                        <img
                             src={'/DeuBc.png'}
                             width={140}
                             height={200}
@@ -85,7 +85,7 @@ export default function Slider(): JSX.Element {
         className="absolute top-1/2 -left-[6vw] transform -translate-y-1/2"
         onClick={goToPrevSlide}
       >
-        <Image
+        <img
         src={'/arrow.png'}
         width={70}
         height={240}
@@ -97,7 +97,7 @@ export default function Slider(): JSX.Element {
         className="absolute top-1/2 -right-[6vw] transform -translate-y-1/2 "
         onClick={goToNextSlide}
       >
-        <Image
+        <img
         src={'/arrow.png'}
         width={70}
         height={240}

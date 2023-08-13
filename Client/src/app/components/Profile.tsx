@@ -156,7 +156,7 @@ const Profile  = () => {
             />
             return (
                 <div key={index} className='flex flex-row gap-2 items-center mx-4'>
-                    <Image src={imageUrl} width={50} height={50} alt={isApproved ? 'psmile' : 'pdessay'}/>
+                    <img src={imageUrl} width={50} height={50} alt={isApproved ? 'psmile' : 'pdessay'}/>
                     <Link href={`${EASSCAN_URL}${attestationData[index]}`}>
                         <h1 className={`text-[${statusColor}] text-xl flex gap-2`}>
                             $20 {statusMessage} for {projectName}{emoji}
@@ -168,7 +168,7 @@ const Profile  = () => {
     };
 
     return <div className="max-w-[80vw] mx-auto px-4 -mt-[5rem] flex  flex-col ">
-    <Image
+    <img
         src={'/maskot_2.png'}
         width={150}
         height={200}
@@ -179,14 +179,14 @@ const Profile  = () => {
         <div className=' flex flex-col border-r-8 gap-2 border-black border-dashed w-[20vw] min-h-[70vh]'>
             <div className=' flex flex-col'>
                 <div className=' justify-center flex mt-8'>
-                    <Image
+                    <img
                         src={'/smile_frame.png'}
                         width={200}
                         height={200}
                         alt='frame'
                         className=' mx-4 absolute '
                     />
-                    <Image
+                    <img
                         src={'/DeuBc.png'}
                         width={140}
                         height={200}
@@ -252,7 +252,7 @@ const Profile  = () => {
                 </div>
                 <div className=' mt-2  gap-2 flex flex-wrap mx-4'>
                     <Link href={'/'} className=' flex flex-row  p-2 bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
-                        <Image
+                        <img
                             src={'/psmile.png'}
                             width={100}
                             height={100}
@@ -283,7 +283,7 @@ const Profile  = () => {
                         </div>
                     </Link>
                     <Link href={'/'} className=' flex flex-row p-2 bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
-                        <Image
+                        <img
                             src={'/predesta.png'}
                             width={100}
                             height={100}
@@ -315,7 +315,7 @@ const Profile  = () => {
                     </Link>
                     <Link href={'/project/1'} className=' flex flex-col p-2  bg-[#FFEDE0]  w-[18rem] gap-4 mx-auto custom-pointer'>
                         <div className=' flex '>
-                            <Image
+                            <img
                                 src={'/pdessay.png'}
                                 width={120}
                                 height={120}
@@ -364,18 +364,18 @@ const Profile  = () => {
                     </div>
                     <div className=' flex flex-row justify-between'>
                         <div className='flex flex-row items-center gap-2'>
-                            <Image src="/psmile.png" width={70} height={70} alt='pdessay' />
+                            <img src="/psmile.png" width={70} height={70} alt='pdessay' />
                             <div className='flex flex-col text-sm'>
                                 <h1 className='text-xl'>Smile asks for $20</h1>
                                 <p className=' animate-pulse'>last 2 days...</p>
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
+                            <img src="/Approve.png" width={100} height={100} alt='approve' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
                             onClick={()=>
                                 createAttestation(true)
                             }/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
+                            <img src="/Refuse.png" width={100} height={100} alt='refuse' className={`custom-pointer hover:scale-105 duration-200 ${isGrayed ? 'grayscale' : ''} `}
                             onClick={()=>
                                 createAttestation(false)
                             }
@@ -384,28 +384,28 @@ const Profile  = () => {
                     </div>
                     <div className=' flex flex-row justify-between'>
                         <div className='flex flex-row items-center gap-2'>
-                            <Image src="/predesta.png" width={70} height={70} alt='pdessay' />
+                            <img src="/predesta.png" width={70} height={70} alt='pdessay' />
                             <div className='flex flex-col text-sm'>
                                 <h1 className='text-xl'>Redesta asks for $20</h1>
                                 <p className=' animate-pulse'>last 2 days...</p>
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
+                            <img src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
+                            <img src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
                         </div>
                     </div>
                     <div className=' flex flex-row justify-between'>
                         <div className='flex flex-row items-center gap-2'>
-                            <Image src="/pdessay.png" width={70} height={70} alt='pdessay' />
+                            <img src="/pdessay.png" width={70} height={70} alt='pdessay' />
                             <div className='flex flex-col text-sm'>
                                 <h1 className='text-xl'>Dessay asks for $20</h1>
                                 <p className=' animate-pulse'>last 2 days...</p>
                             </div>
                         </div>
                         <div className=' flex flex-row justify-end'>
-                            <Image src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
-                            <Image src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
+                            <img src="/Approve.png" width={100} height={100} alt='approve' className='custom-pointer hover:scale-105 duration-200'/>
+                            <img src="/Refuse.png" width={100} height={100} alt='refuse' className='custom-pointer hover:scale-105 duration-200'/>
                         </div>
                     </div>
 
@@ -423,7 +423,7 @@ const Profile  = () => {
                   
                     {
                         ready ? renderData(cleanData,attestationData) :         
-                        <Image
+                        <img
                         src={'/maskot.png'}
                         width={300}
                         height={200}

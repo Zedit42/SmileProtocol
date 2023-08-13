@@ -49,7 +49,7 @@ const Explore = () => {
             </div>
         </div>
         <div className=' flex flex-col mt-[6rem]'>
-            <div className=' text-4xl ml-[10vw] mb-2 flex'>Featured Project <Image src='/token.png' width={48} height={24} alt='coin logo' className=' ml-4 '/> </div>
+            <div className=' text-4xl ml-[10vw] mb-2 flex'>Featured Project <img src='/token.png' width={48} height={24} alt='coin logo' className=' ml-4 '/> </div>
             <Slider/>
         </div>
         {/* Search and grid projects */}

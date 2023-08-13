@@ -10,14 +10,14 @@ const Campaing = () => {
                     <p className=' text-3xl font-extrabold m-[1rem] mb-0'>Creator Info</p>
                     <div className=' flex'>
                         <div>
-                            <Image
+                            <img
                             src={'/smile_frame.png'}
                             width={200}
                             height={200}
                             alt='frame'
                             className=' mx-4 absolute '
                             />
-                            <Image
+                            <img
                                 src={'/DeuBc.png'}
                                 width={140}
                                 height={200}

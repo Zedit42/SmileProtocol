@@ -129,7 +129,7 @@ const Stake = () => {
 
                         />
 
-                        <Image
+                        <img
                             src={'/chainlink.png'}
                             width={44}
                             height={24}
@@ -150,7 +150,7 @@ const Stake = () => {
                             value={tokenId === '' ? '' : tokenId}
                             onChange={(e) => setTokenId(e.target.value)}
                         />
-                        <Image
+                        <img
                             src={'/token.png'}
                             width={44}
                             height={24}
@@ -195,7 +195,7 @@ const Stake = () => {
                     <div className=' flex items-center justify-center text-2xl gap-2'>
                         <div>0</div>
                         <div>SMILE</div>
-                        <Image
+                        <img
                             src={'/token.png'}
                             width={44}
                             height={24}
@@ -247,7 +247,7 @@ const Stake = () => {
             className='-mt-[3rem] -ml-[1rem] rotate-45 absolute'
         />
         </div>
-        <Image
+        <img
         src={'/maskot.png'}
         width={400}
         height={200}
