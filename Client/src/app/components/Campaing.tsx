@@ -36,7 +36,7 @@ const Campaing = () => {
                 <div className=' w-full mt-4'>
                     <div className=' max-w-[80%] mx-auto flex flex-col'>
                         <div>
-                            <Image
+                            <img
                                 src={'/nft 1.png'}
                                 width={200}
                                 height={200}
@@ -48,7 +48,7 @@ const Campaing = () => {
                             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic ex rerum, corporis cum, ratione vitae, debitis expedita eveniet maxime praesentium laboriosam quod eaque soluta. Incidunt quo eum distinctio alias facilis?
                             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Blanditiis quaerat non aliquid enim voluptas, repellat est numquam repellendus error placeat exercitationem reiciendis excepturi assumenda veniam facilis laudantium quae cumque consectetur!
                         </div>
-                        <Image
+                        <img
                                 src={'/nft 2.png'}
                                 width={200}
                                 height={200}
@@ -59,7 +59,7 @@ const Campaing = () => {
                             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic ex rerum, corporis cum, ratione vitae, debitis expedita eveniet maxime praesentium laboriosam quod eaque soluta. Incidunt quo eum distinctio alias facilis?
                             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Blanditiis quaerat non aliquid enim voluptas, repellat est numquam repellendus error placeat exercitationem reiciendis excepturi assumenda veniam facilis laudantium quae cumque consectetur!
                         </div>
-                        <Image
+                        <img
                                 src={'/nft 3.png'}
                                 width={200}
                                 height={200}
@@ -70,7 +70,7 @@ const Campaing = () => {
                             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Hic ex rerum, corporis cum, ratione vitae, debitis expedita eveniet maxime praesentium laboriosam quod eaque soluta. Incidunt quo eum distinctio alias facilis?
                             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Blanditiis quaerat non aliquid enim voluptas, repellat est numquam repellendus error placeat exercitationem reiciendis excepturi assumenda veniam facilis laudantium quae cumque consectetur!
                         </div>
-                        <Image
+                        <img
                                 src={'/nft 4.png'}
                                 width={200}
                                 height={200}
@@ -85,7 +85,7 @@ const Campaing = () => {
                 </div>
             </div>
             <div>
-                <Image
+                <img
                 src={'/maskot_3.png'}
                 width={100}
                 height={60}

@@ -128,7 +128,7 @@ const Hero = () => {
     <div className="max-w-[75vw] mx-auto px-4 my-6 flex gap-[4rem] ">
       <div className=' '>
         <div className=" w-[45vw] border-8 border-black">
-          <Image
+          <img
           src={'/smileprotocol.gif'}
           width={1920}
           height={1080}

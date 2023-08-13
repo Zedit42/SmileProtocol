@@ -139,7 +139,7 @@ const Profile  = () => {
 
             const imageUrl = parseInt(item[0]?.value?.value) === 1 ? '/psmile.png' : '/pdessay.png';
             const emoji = isApproved ?             
-            <Image 
+            <img 
                 src={'/confirm.png'}
                 className=' hover:scale-105 duration-300'
                 width={32}
@@ -147,7 +147,7 @@ const Profile  = () => {
                 alt='approve'
             />
             :
-            <Image 
+            <img 
                 src={'/cross.png'}
                 className=' hover:scale-105 duration-300'
                 width={32}
@@ -206,35 +206,35 @@ const Profile  = () => {
             <div className=' border-t-8 border-black border-dashed '>
                 <p className=' text-lg font-bold text-center'>N F T s</p>
                 <div className=' grid grid-rows-2 grid-cols-4 w-[90%] justify-center items-end mx-auto '>
-                    <Image
+                    <img
                         src={'/nft 1.png'}
                         width={50}
                         height={40}
                         alt='nft photo'
                         className=' m-2'
                     />
-                    <Image
+                    <img
                         src={'/nft 2.png'}
                         width={50}
                         height={40}
                         alt='nft photo'
                         className=' m-2'
                     />
-                    <Image
+                    <img
                         src={'/nft 3.png'}
                         width={50}
                         height={40}
                         alt='nft photo'
                         className=' m-2'
                     />
-                    <Image
+                    <img
                         src={'/nft 4.png'}
                         width={50}
                         height={40}
                         alt='nft photo'
                         className=' m-2'
                     />
-                    <Image
+                    <img
                         src={'/nft 5.png'}
                         width={50}
                         height={40}

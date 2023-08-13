@@ -232,7 +232,7 @@ const Stake = () => {
       <div className="">
         <div className="border-4 border-black bg-[#FFF9ED] min-h-[70vh]">
           {tabContent[activeTab - 1]()}
-        <Image
+        <img
             src={'/nft 2.png'}
             width={64}
             height={64}

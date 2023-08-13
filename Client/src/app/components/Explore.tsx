@@ -10,7 +10,7 @@ const Explore = () => {
     <div className=' flex flex-col h-full overflow-x-hidden '>
         {/* stats */}
         <div className='max-w-screen overflow-x-hidden' >
-            <Image
+            <img
                 src={'/strip.jpg'}
                 width={1920}
                 height={200}
@@ -55,7 +55,7 @@ const Explore = () => {
         {/* Search and grid projects */}
         <div>
             <div className=' w-[80vw] mx-auto h-full mt-[3rem] gap-2 justify-between flex'>
-                    <Image
+                    <img
                         src={'/maskot4.png'}
                         width={70}
                         height={400}

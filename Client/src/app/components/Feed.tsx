@@ -33,7 +33,7 @@ const Feed = () => {
         {posts.map((posts, index) => (
             <Link href={posts.href} key={index} className=' flex flex-col border-8 justify-between border-black bg-[#FFF9ED] max-w-[20rem] min-h-[15rem] w-full h-full' >
                 <div>
-                    <Image
+                    <img
                         src={posts.src}
                         width={800}
                         height={600}
@@ -45,7 +45,7 @@ const Feed = () => {
                     <div className=' flex justify-between'>
                         <div className=' text-2xl'>{posts.title}</div>
                         <div className=' flex'>
-                            <Image
+                            <img
                                 src={'/deubc.png'}
                                 width={48}
                                 height={24}
