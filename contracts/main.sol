@@ -24,6 +24,7 @@ contract Main {
     Project[] private projects;
     mapping(uint256 => WithdrawalRequest[]) private requests; 
     mapping(uint256 => mapping(uint256 => mapping(address => bool[2]))) private voteStatus;
+    mapping(uint256 => mapping(address => bytes32[])) voteEasUID;
     mapping(address => mapping(uint256 => uint256)) private addressToDonationAmount;
     uint256 constant minSecondsToVote = 1209600;
     uint8 constant maxFailedWithdrawalRequests = 3;
@@ -227,7 +228,7 @@ contract Main {
         return requests[_projectID];
     }
 
-    function vote(uint256 _projectID, uint256 _reqID, bool _vote) external {
+    function vote(uint256 _projectID, uint256 _reqID, bool _vote, bytes32 _EAS_UID) external {
         /* if(SmileProtocol_ProjectNFT(projects[_projectID].projectNFT.nftAddress).balanceOf(msg.sender) == 0) revert Unauthorized(); */
         /* if(!checkLastWithdrawalRequest(_projectID).isActive) revert NotActive(); */
         /* if(block.timestamp > checkLastWithdrawalRequest(_projectID).endTimestamp) revert NotActive(); */
@@ -251,8 +252,13 @@ contract Main {
         bool vote _vote
         */
 
+       voteEasUID[_projectID][msg.sender].push(_EAS_UID);
         
 
+    }
+
+    function getLatestVoteForProject(uint256 _projectID) external view returns(bytes32) {
+        return voteEasUID[_projectID][msg.sender][(voteEasUID[_projectID][msg.sender].length)-1];
     }
 
     function buySMILE(uint256 _amount) external {
@@ -261,7 +267,7 @@ contract Main {
         if(_amount > CCIPBnM.allowance(msg.sender, address(this))) revert NoAllowance();
 
         CCIPBnM.transferFrom(msg.sender, address(this), _amount);
-        SMILE.mint(msg.sender, _amount);
+        SMILE.mint(msg.sender, _amount * 95 / 100);
     }
 
     function buySmileAndDonate(address donor, uint256 _projectID, uint256 _amount) external {

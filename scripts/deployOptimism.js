@@ -23,7 +23,9 @@ async function main() {
   console.log("Main deployed to:", Main.address);
   console.log("DestinationDonor deployed to:", DestinationDonor.address);
 
- 
+
+
+
   console.log("Verifying contracts on Etherscan...")
   
   hre.run("verify:verify", {
@@ -31,6 +33,11 @@ async function main() {
     constructorArguments: [optimismCCIP],
   })
   
+  hre.run("verify:verify", {
+    address: smileTokenAddress,
+    constructorArguments: ["Smile Protocol", "SMILE"],
+  })
+
   hre.run("verify:verify", {
     address: DestinationDonor.address,
     constructorArguments: [getRouterConfig("optimismGoerli").address, Main.address, optimismCCIP, smileTokenAddress],
