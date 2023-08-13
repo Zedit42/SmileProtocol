@@ -34,6 +34,7 @@ const config: Config = {
     },
     animation: {
       'jelly': 'jelly 0.5s',
+      'jellyinfinite': 'jelly 0.5s infinite',
     },
   },
   plugins: [],

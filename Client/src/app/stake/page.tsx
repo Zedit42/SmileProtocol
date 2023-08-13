@@ -1,14 +1,10 @@
 "use client"
 import Header from '@/app/components/Header'
-import Hero from '@/app/components/Profile'
-import '../../globals.css'
-import React, {useEffect, useState} from 'react'
-import {ApolloQueryResult} from "@apollo/client";
+import Hero from '@/app/components/Stake'
 
+import React, {useEffect} from 'react'
 
-
-
-const Profile = () => {
+const Stake = () => {
     useEffect(() => {
         document.title = "Smile Protocol"
     }, []);
@@ -17,14 +13,14 @@ const Profile = () => {
       <img
         src='/backgroundimage.webp'
         className=' w-full h-full fixed -z-10'
-        alt='bg image' />
+        alt='bg image'
+      />
       <div className='custom-default'>
-        <Header />
-        <Hero />
+        <Header/>
+        <Hero/>
       </div>
     </main>
-
   )
 }
 
-export default Profile
+export default Stake

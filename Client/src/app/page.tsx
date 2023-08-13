@@ -1,14 +1,26 @@
-import Link from "next/link";
-
-
+"use client"
+import Header from '@/app/components/Header'
+import Hero from '@/app/components/Explore'
+import Head from "next/head";
+import {useEffect} from "react";
 export default function Home() {
+  useEffect(() => {
+    document.title = "Smile Protocol"
+  }, []);
   return (
-    <main className="flex min-h-screen flex-col items-center bg-black justify-between p-24">
-      <div className=" bg-white hover:bg-black p-10 cursor-button ">
-        <Link href={'/project/1'}>
-        go to project
-        </Link>
+    <>
+
+    <main className=' cursor-none '>
+      <img
+        src='/backgroundimage.webp'
+        className=' w-full h-full fixed -z-10'
+        alt='bg image'
+      />
+      <div className='custom-default'>
+        <Header/>
+        <Hero/>
       </div>
     </main>
+    </>
   )
 }
