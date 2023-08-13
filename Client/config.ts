@@ -1,6 +1,6 @@
 import { ethers } from "ethers"
 const provider=new ethers.JsonRpcProvider("https://ava-testnet.public.blastapi.io/ext/bc/C/rpc")
-export const MAIN_CONTRACT:string = "ff3bE0a7044Cc495e00E1Eb2f8Bf996Ed5B800Ee"
+export const MAIN_CONTRACT:string = "0xff3bE0a7044Cc495e00E1Eb2f8Bf996Ed5B800Ee"
 export const DESTINATION_CONTRACT:string = "0xBf2429F9676553Af7c0b772fbb3B3B3147918c84"
 export const SOURCE_CONTRACT:string = "0x8156e3cbb3bd1430EcbF28A640737853b310af54"
 export const DESTINATION_CHAIN:string = "2664363617261496610"

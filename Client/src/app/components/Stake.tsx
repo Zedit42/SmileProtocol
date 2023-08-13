@@ -30,7 +30,7 @@ const Stake = () => {
 
 
   const [rotation, setRotation] = useState(0);
-  const mainAddress:string = "0x60B3D95D00e98d14ec080D51752Ba137186CFaAd"
+
   const handleSVGClick = () => {
     setRotation((rotation + 180) % 360);
   };
@@ -77,13 +77,14 @@ const Stake = () => {
         "type": "function"
       }
     ],
-      value:parseEther("0.1"),
+     value:BigInt(0),
     functionName: 'approve',       
   })
+
     const {write: writeForStake,data:writeForData,isSuccess:successForData} =
         useContractWrite({
             //buySMILE address
-            address: `0x${MAIN_CONTRACT}`,
+            address: "0xff3bE0a7044Cc495e00E1Eb2f8Bf996Ed5B800Ee",
             abi: [
                 {
                     "inputs": [
@@ -100,9 +101,15 @@ const Stake = () => {
                 }
             ],
             functionName: "buySMILE",
-            value:parseEther("0.1")
+            value:BigInt(0)
+
         })
 
+    useEffect(() => {
+        if(writeForData) {
+            toast.success("Your stake successfully saved!")
+        }
+    }, [writeForData]);
 
 
 
@@ -160,7 +167,7 @@ const Stake = () => {
                         }
                         else {
                             write({
-                                args: [mainAddress, parseEther(tokenId)]
+                                args: [MAIN_CONTRACT, parseEther(tokenId)]
                             })
                         }
                     }}

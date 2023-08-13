@@ -48,11 +48,8 @@ const Hero = () => {
         "type": "function"
       }
     ],
-    args:[
-      BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
-    ],
     functionName: 'buySmileAndDonate',
-    value:parseEther("0.1")
+    value:BigInt(0)
   })
 
   const {write:approveWrite,isLoading:approveLoading,isSuccess:approveSuccess} = useContractWrite({
@@ -242,8 +239,8 @@ const Hero = () => {
                   })
                   await write({
                     args:[
-
-                    ]
+                      BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+                    ],
                   })
                 }else {
                   toast.error("You can't donate 0 SMILE")

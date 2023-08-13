@@ -56,7 +56,7 @@ export async function makeAttestation(schemaType:SchemaType,answer:boolean) {
         schemaID = ProjectSchemaUID
     } else if (schemaType === SchemaType.Vote) {
         encodedData = schemaEncoder.encodeData([
-            {name:"projectID",value:1,type:"uint64"},
+            {name:"projectID",value:0,type:"uint64"},
             {name:"voter",value:TestWallet,type:"address"},
             {name:"answer",value:answer,type:"bool"}
         ])
