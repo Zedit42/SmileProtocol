@@ -19,7 +19,6 @@ import {
 } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
-
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     avalancheFuji,
@@ -72,7 +71,9 @@ export default function RootLayout({
   return (
 
     <html lang="en">
-      
+  <head>
+    <link rel="icon" href="smilefav.ico" />
+  </head>
       <body className={chicle.className}>
       <WagmiConfig config={wagmiConfig}>
     <RainbowKitProvider appInfo={demoAppInfo} chains={chains}>

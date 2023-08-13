@@ -82,10 +82,26 @@ const Hero = () => {
   })
 
   useEffect(() => {
-    if(chain.id === 43113) {
-      setCorrectChain(true)
-    }else {
-      setCorrectChain(false)
+    if (!isLoading && isSuccess) {
+      toast.success("Your donation has been successfully saved.")
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if(!approveLoading && approveSuccess) {
+      toast.success("Approved successfully!")
+    }
+
+
+  }, [approveLoading,approveSuccess]);
+
+  useEffect(() => {
+    if(chain) {
+      if(chain.id === 43113) {
+        setCorrectChain(true)
+      }else {
+        setCorrectChain(false)
+      }
     }
 
 
@@ -228,7 +244,7 @@ const Hero = () => {
                 }
               }
             }catch(error) {
-              console.error(error)
+              toast.error("Something Happened")
             }
           }}>{correctChain ? 'Support': 'Wrong Network' }</button>
       </div>

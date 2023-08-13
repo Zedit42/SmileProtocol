@@ -1,9 +1,13 @@
+"use client"
 import Header from '@/app/components/Header'
 import Hero from '@/app/components/Stake'
 
-import React from 'react'
+import React, {useEffect} from 'react'
 
 const Stake = () => {
+    useEffect(() => {
+        document.title = "Smile Protocol"
+    }, []);
   return (
     <main className=' cursor-none '>
       <img

@@ -9,6 +9,9 @@ import {ApolloQueryResult} from "@apollo/client";
 
 
 const Profile = () => {
+    useEffect(() => {
+        document.title = "Smile Protocol"
+    }, []);
   return (
     <main className=' cursor-none '>
       <img

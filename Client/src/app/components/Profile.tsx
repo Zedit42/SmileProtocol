@@ -39,21 +39,31 @@ const Profile  = () => {
             setGrayed(true)
             const toastId = toast.loading("Your vote saving to EAS")
             const EASUID = await makeAttestation(SchemaType.Vote, window.ethereum,answer)
-            toast.success("Your vote saved at EAS successfully!",{
-                id:toastId
-            })
+            toast.dismiss(toastId)
+            toast((t)=>
+                (<span>
+                                Your vote saved to EAS Successfully!<br/>
+                                    <a href={`${EASSCAN_URL}${EASUID}`} className="font-bold text-[#539165]"
+                                    onClick={()=>toast.dismiss(t.id)}
+                                    >Click here to go EAS Proof</a>
+                                </span>)
+            )
+
+            const toasterId = toast.loading("Your vote saving to Contract")
             await write({
                 args:[
                     0,0,true,EASUID.slice(2,34)
                 ]
             })
-            /* if(isSuccess) {
-            window.location.reload()
-            } */
+            toast.success("Your vote saved contract to successfully!",{
+                id:toasterId
+            })
+
+           // window.location.reload()
         }catch(error) {
             
             toast.error("Error")
-            throw error
+
         }
 
     }
@@ -334,7 +344,11 @@ const Profile  = () => {
                                 </div>
                             </div>
                         </div>
-                        <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'>Withdraw</button>
+                        <button
+                            className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
+
+                        >Withdraw
+                        </button>
 
                     </Link>
                 </div>

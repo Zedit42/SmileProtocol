@@ -36,10 +36,12 @@ const Stake = () => {
   };
 
     useEffect(() => {
-       if(chain.id === 420) {
-           setCorrectChain(true)
-       }else {
-            setCorrectChain(false)
+       if(chain) {
+           if(chain.id === 420) {
+               setCorrectChain(true)
+           }else {
+               setCorrectChain(false)
+           }
        }
 
 
