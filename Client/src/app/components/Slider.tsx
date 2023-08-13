@@ -62,7 +62,7 @@ export default function Slider(): JSX.Element {
                             className=' mx-4 absolute '
                         />
                         <img
-                            src={'/DeuBc.png'}
+                            src={'/deubc.png'}
                             width={140}
                             height={200}
                             alt='creator logo'
