@@ -136,8 +136,8 @@ const Profile  = () => {
             const isApproved = item[2].value?.value === true;
             const statusColor = isApproved ? '#65b550' : '#b55052';
             const statusMessage = isApproved ? 'approved' : 'rejected';
-
-            const imageUrl = parseInt(item[0]?.value?.value) === 1 ? '/psmile.png' : '/pdessay.png';
+            const projectName = parseInt(item[0]?.value?.value) === 0 ? "Smile": "Dessay"
+            const imageUrl = parseInt(item[0]?.value?.value) === 0 ? '/psmile.png' : '/pdessay.png';
             const emoji = isApproved ?             
             <img 
                 src={'/confirm.png'}
@@ -159,7 +159,7 @@ const Profile  = () => {
                     <Image src={imageUrl} width={50} height={50} alt={isApproved ? 'psmile' : 'pdessay'}/>
                     <Link href={`${EASSCAN_URL}${attestationData[index]}`}>
                         <h1 className={`text-[${statusColor}] text-xl flex gap-2`}>
-                            $20 {statusMessage} for Dessay{emoji}
+                            $20 {statusMessage} for {projectName}{emoji}
                         </h1>
                     </Link>
                 </div>
