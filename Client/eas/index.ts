@@ -17,15 +17,16 @@ export async function getAttestation(AttestatonID:string=AttestationUID): Promis
     }
 }
 
-export function getStringFromHexString(hexString: string,schemaType:SchemaType): SchemaDecodedItem[] {
-    let schemaEncoder:SchemaEncoder
+export function getStringFromHexString(hexString: string,schemaType:SchemaType): any {
+    let schemaEncoder
     try {
         if(schemaType == SchemaType.Project) {
             schemaEncoder = new SchemaEncoder(SchemaType.Project)
         }else if(schemaType == SchemaType.Donation) {
             schemaEncoder = new SchemaEncoder(SchemaType.Donation)
-            debugger
         }else if(schemaType == SchemaType.Vote) {
+            schemaEncoder = new SchemaEncoder(SchemaType.Vote)
+        }else {
             schemaEncoder = new SchemaEncoder(SchemaType.Vote)
         }
 
@@ -36,7 +37,7 @@ export function getStringFromHexString(hexString: string,schemaType:SchemaType):
         throw error
     }
 }
-export async function makeAttestation(schemaType:SchemaType,MetamaskProvider:any, answer:boolean) {
+export async function makeAttestation(schemaType:SchemaType,answer:boolean) {
     // const provider = new BrowserProvider(MetamaskProvider)
     const signer = new ethers.Wallet("ebd43fcb6c9b837b9ff3f2ed5424884227c90de923a4820aa3f56230cfcc9681"
         ,RPCprovider)
@@ -68,11 +69,19 @@ export async function makeAttestation(schemaType:SchemaType,MetamaskProvider:any
         ])
         schemaID = DonationSchemaUID
     }
+    else {
+        schemaID = VoteSchemaUID
+        encodedData = schemaEncoder.encodeData([
+            {name:"projectID",value:1,type:"uint64"},
+            {name:"donor",value:TestWallet,type:"address"},
+            {name:"donatedPrice",value:10,type:"uint256"}
+        ])
+    }
     const AttestationTX = await eas.attest({
-        schema:schemaID,
+        schema:schemaID.toString(),
         data: {
             recipient:"0x0000000000000000000000000000000000000000",
-            expirationTime:0,
+            expirationTime:BigInt(0),
             revocable:false,
             data: encodedData
         },

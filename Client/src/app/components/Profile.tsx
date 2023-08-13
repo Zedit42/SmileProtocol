@@ -11,7 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useContractWrite, useAccount } from 'wagmi'
 import { MAIN_CONTRACT} from '../../../config'
 import {encodeBytes32String} from "ethers"
-import {stringToHex} from "viem"
+import {parseEther, stringToHex} from "viem"
 /* interface ProfileProps {
     encodedData:{
         data:string,
@@ -38,7 +38,7 @@ const Profile  = () => {
         try {
             setGrayed(true)
             const toastId = toast.loading("Your vote saving to EAS")
-            const EASUID = await makeAttestation(SchemaType.Vote, window.ethereum,answer)
+            const EASUID = await makeAttestation(SchemaType.Vote,answer)
             toast.dismiss(toastId)
             toast((t)=>
                 (<span>
@@ -77,7 +77,7 @@ const Profile  = () => {
                 const encodedData: string[] = [];
                 attesterData.forEach((veri) => {
                     const atID = veri["id"]
-                    const encoded: SchemaDecodedItem[] = getStringFromHexString(veri["data"], SchemaType.Vote)
+                    const encoded: any = getStringFromHexString(veri["data"], SchemaType.Vote)
                     attestionID.push(atID)
                     encodedData.push(encoded);
                 })
@@ -96,7 +96,7 @@ const Profile  = () => {
     }, [attestationData]);
 
     const {data,write,isLoading,isSuccess} = useContractWrite({
-        address: MAIN_CONTRACT,
+        address: "0xff3bE0a7044Cc495e00E1Eb2f8Bf996Ed5B800Ee",
         abi:[
             {
                 "inputs": [
@@ -127,15 +127,16 @@ const Profile  = () => {
                 "type": "function"
               }
         ],
-        functionName:"vote"
+        functionName:"vote",
+        value:parseEther("0.1")
     })
 
-
-    const renderData = (data, attestationData) => {
-        return data?.slice(0).reverse().map((item, index:number) => {
+    const renderData = (data:any, attestationData:any) => {
+        return data?.slice(0).reverse().map((item:any, index:number) => {
             const isApproved = item[2].value?.value === true;
             const statusColor = isApproved ? '#65b550' : '#b55052';
             const statusMessage = isApproved ? 'approved' : 'rejected';
+
             const imageUrl = parseInt(item[0]?.value?.value) === 1 ? '/psmile.png' : '/pdessay.png';
             const emoji = isApproved ?             
             <Image 

@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import { parseEther } from 'viem'
-import { useContractWrite, useAccount,useNetwork} from 'wagmi'
+import { useContractWrite, useAccount,useNetwork,usePrepareContractWrite} from 'wagmi'
 import { MAIN_CONTRACT} from '../../../config'
 import toast, { Toaster } from 'react-hot-toast';
 import { switchNetwork} from '@wagmi/core'
@@ -48,7 +48,7 @@ const Stake = () => {
     }, [chain]);
 
 
-  const {data,write,isLoading,isSuccess} = useContractWrite({
+  const {write,isSuccess,isLoading,isError} = useContractWrite({
     // CCIP-BnM address for approving
     address: '0xaBfE9D11A2f1D61990D1d253EC98B5Da00304F16',
     abi: [
@@ -77,30 +77,31 @@ const Stake = () => {
         "type": "function"
       }
     ],
+      value:parseEther("0.1"),
     functionName: 'approve',       
   })
-
-  const {data:dataForStake,write:writeForStake,isSuccess:SuccessForStake,isLoading:LoadingForStake} =
-  useContractWrite({
-    //buySMILE address
-    address:{MAIN_CONTRACT},
-    abi:[
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "_amount",
-            "type": "uint256"
-          }
-        ],
-        "name": "buySMILE",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ],
-    functionName:"buySMILE",
-  })
+    const {write: writeForStake,data:writeForData,isSuccess:successForData} =
+        useContractWrite({
+            //buySMILE address
+            address: `0x${MAIN_CONTRACT}`,
+            abi: [
+                {
+                    "inputs": [
+                        {
+                            "internalType": "uint256",
+                            "name": "_amount",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "buySMILE",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }
+            ],
+            functionName: "buySMILE",
+            value:parseEther("0.1")
+        })
 
 
 
@@ -160,12 +161,13 @@ const Stake = () => {
                         else {
                             write({
                                 args: [mainAddress, parseEther(tokenId)]
-                            }) }
+                            })
+                        }
                     }}
                     >{correctChain ? 'Approve': 'Wrong Network'}</button>
                     <button className=' bg-[#FFF9ED] text-black hover:bg-black hover:text-[#FFF9ED] hover:animate-jelly duration-200 ease-linear border-4 border-black font-bold py-2 px-4 custom-pointer text-xl min-w-[12rem]'
-                    onClick={
-                      ()=>writeForStake({
+                    onClick={()=>
+                      writeForStake({
                         args:[parseEther(tokenId)]
                       })
                       
