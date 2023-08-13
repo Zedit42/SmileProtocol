@@ -17,7 +17,7 @@ const Hero = () => {
   const [tokenId, setTokenId] = useState('')
   const [correctChain,setCorrectChain] = useState(false)
   const {data,write,isLoading,isSuccess} = useContractWrite({
-    address: SOURCE_CONTRACT,
+    address: "0x8156e3cbb3bd1430EcbF28A640737853b310af54",
     abi:[
       {
         "inputs": [
@@ -48,8 +48,13 @@ const Hero = () => {
         "type": "function"
       }
     ],
-    functionName: 'buySmileAndDonate'
+    args:[
+      BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+    ],
+    functionName: 'buySmileAndDonate',
+    value:parseEther("0.1")
   })
+
   const {write:approveWrite,isLoading:approveLoading,isSuccess:approveSuccess} = useContractWrite({
     address: "0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4",
     abi:[
@@ -78,7 +83,8 @@ const Hero = () => {
         "type": "function"
       }
     ],
-    functionName:"approve"
+    functionName:"approve",
+    value:parseEther("0.1")
   })
 
   useEffect(() => {
@@ -228,7 +234,7 @@ const Hero = () => {
               await network()
               }
               else {
-                if(tokenId != 0) {
+                if(tokenId != "0") {
                   await approveWrite({
                     args:[
                       SOURCE_CONTRACT,parseEther(tokenId)
@@ -236,7 +242,7 @@ const Hero = () => {
                   })
                   await write({
                     args:[
-                      BigInt(DESTINATION_CHAIN),DESTINATION_CONTRACT,0,parseEther(tokenId)
+
                     ]
                   })
                 }else {

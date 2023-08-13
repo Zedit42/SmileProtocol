@@ -27,13 +27,14 @@ export const VoteSchemaEncoderTemplate: string = "uint64 projectID,address voter
 
 export const DonationSchemaEncoderTemplate: string = "uint64 projectID,address donor,uint256 donatedPrice"
 export enum SchemaType {
-    Project = ProjectSchemaEncoderTemplate,
-    Vote = VoteSchemaEncoderTemplate,
-    Donation = DonationSchemaEncoderTemplate
+    Project = "string projectName, address owner, " +
+        "uint64 timestamp, uint256 goalAmount, uint256 nftPrice",
+    Vote = "uint64 projectID,address voter,bool answer",
+    Donation = "uint64 projectID,address donor,uint256 donatedPrice"
 }
 
 export enum SchemaUIDType {
-    Project = ProjectSchemaUID,
-    Vote = VoteSchemaUID,
-    Donation = DonationSchemaUID
+    Project = "0x799392bb07fae6381125e8648e3f63e4a4d245c9a2c29b16392b294737c59a46",
+    Vote = "0x6bac47f3c19958786b37fd542a4f1d9b0380281c55b6a9773c0015ef110286ff",
+    Donation = "0xeb9b167be22489721772a882dc705f1c342cc21960353e6970e375c8886723eb"
 }
